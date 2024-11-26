@@ -6,8 +6,8 @@ npm install react-native-screens react-native-safe-area-context
 npx expo install react-native-gesture-handler
 npx expo install react-native-pager-view
 npm install @react-navigation/material-top-tabs
-expo install @gorhom/bottom-sheet
-expo install react-native-reanimated react-native-gesture-handler
+npx expo install @gorhom/bottom-sheet
+npx expo install react-native-reanimated react-native-gesture-handler
 
 git branch [tên branch]
 git switch [tên branch]
