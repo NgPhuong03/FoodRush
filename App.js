@@ -1,10 +1,11 @@
-import { Dimensions, StyleSheet, View, Text } from "react-native";
+import { Dimensions, StyleSheet, View, Text, Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { AuthContext, AuthContextProvider } from "./contexts/AuthContext";
 import { useContext } from "react";
 import AuthenticationStack from "./components/AuthenticationStack";
 import { StatusBar } from "expo-status-bar";
 import BottomTabNavigatior from "./components/BottomTabNavigator";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 function ScreenStack() {
   const { isAuthenticated } = useContext(AuthContext);
@@ -12,12 +13,15 @@ function ScreenStack() {
   return (
     <NavigationContainer>
       {!isAuthenticated && (
-        <View style={styles.container}>
-          <Text>Ve logo o day</Text>
-        </View>
+        <SafeAreaView style={styles.container}>
+          <Image 
+            source={require('./assets/logo.png')}
+            style={styles.logo}
+          />
+        </SafeAreaView>
       )}
 
-      <View style={{ marginTop: height * 0.05 }}>
+      <View style={{ marginTop: height * 0.05}}>
         <StatusBar style="auto" backgroundColor="transparent" />
       </View>
 
@@ -36,15 +40,14 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    height: "20%",
-    backgroundColor: "#666",
+    height: "30%",
+    backgroundColor: "#ffff",
     alignItems: "center",
     justifyContent: "center",
   },
   logo: {
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
     backgroundColor: "red",
   },
 });
