@@ -18,7 +18,7 @@ function ScreenStack() {
       )}
 
       <View style={{ marginTop: height * 0.05 }}>
-        <StatusBar style="auto" backgroundColor="transparent" />
+        <StatusBar backgroundColor="transparent" />
       </View>
 
       {isAuthenticated ? <BottomTabNavigatior /> : <AuthenticationStack />}

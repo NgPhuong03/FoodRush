@@ -1,5 +1,4 @@
 import { useNavigation } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function OrderScreen() {
@@ -7,7 +6,6 @@ export default function OrderScreen() {
   return (
     <View style={styles.container}>
       <Text>OrderScreen!</Text>
-      <StatusBar style="auto"/>
 
       <TouchableOpacity style={{backgroundColor: 'lightblue'}} onPress={() => navigation.navigate('FollowingOrder')}>
         <Text>Theo doi don hang</Text>

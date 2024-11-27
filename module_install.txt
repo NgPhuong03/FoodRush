@@ -9,6 +9,8 @@ npm install @react-navigation/material-top-tabs
 expo install @gorhom/bottom-sheet
 expo install react-native-reanimated react-native-gesture-handler
 
+npx expo install react-native-maps
+
 git branch [tên branch]
 git switch [tên branch]
 
