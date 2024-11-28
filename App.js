@@ -12,6 +12,9 @@ function ScreenStack() {
   const { width, height } = Dimensions.get("window");
   return (
     <NavigationContainer>
+      <View style={{ marginTop: height * 0.05}}>
+        <StatusBar style="auto" backgroundColor="transparent" />
+      </View>
       {!isAuthenticated && (
         <SafeAreaView style={styles.container}>
           <Image 
@@ -21,9 +24,7 @@ function ScreenStack() {
         </SafeAreaView>
       )}
 
-      <View style={{ marginTop: height * 0.05}}>
-        <StatusBar style="auto" backgroundColor="transparent" />
-      </View>
+
 
       {isAuthenticated ? <BottomTabNavigatior /> : <AuthenticationStack />}
     </NavigationContainer>
