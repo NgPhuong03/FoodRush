@@ -10,6 +10,12 @@ npx expo install @gorhom/bottom-sheet
 npx expo install react-native-reanimated react-native-gesture-handler
 
 npx expo install react-native-maps
+npm install react-native-permissions
+npx expo install expo-location
+npm install axios
+npm install lodash.debounce
+npm install react-native-dropdown-picker
+npx expo install @react-native-async-storage/async-storage
 
 git branch [tên branch]
 git switch [tên branch]
