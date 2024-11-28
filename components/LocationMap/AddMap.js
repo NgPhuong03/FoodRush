@@ -14,7 +14,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import SearchAddress from "../../components/LocationMap/SearchAddress";
 import { TextInput } from "react-native-gesture-handler";
 import polyline from "@mapbox/polyline";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import IconMater from "react-native-vector-icons/MaterialIcons";
 
 export default function AddMap() {
   const FOOD_RUSH_LOCATION = {
@@ -62,10 +62,9 @@ export default function AddMap() {
         origin +
         "&destination=10.882245102818498,106.78249876263239&vehicle=car&api_key=GKkG446Pg4YiEAnnW6z15pGzLALuh1WSBShBZBOW";
       const response = await fetch(url);
-      
 
       if (response) {
-        const data =await response.json();
+        const data = await response.json();
         const encoded = data.routes[0].overview_polyline.points;
         const distance = data.routes[0].legs[0].distance.value;
         const coordinates = polyline
@@ -83,23 +82,19 @@ export default function AddMap() {
   }, []);
 
   const direction = async (lat, long) => {
-    
     const origin = lat + "," + long;
-      const url =
-        `https://rsapi.goong.io/direction?origin=` +
-        origin +
-        "&destination=10.882245102818498,106.78249876263239&vehicle=car&api_key=GKkG446Pg4YiEAnnW6z15pGzLALuh1WSBShBZBOW";
- 
+    const url =
+      `https://rsapi.goong.io/direction?origin=` +
+      origin +
+      "&destination=10.882245102818498,106.78249876263239&vehicle=car&api_key=GKkG446Pg4YiEAnnW6z15pGzLALuh1WSBShBZBOW";
+
     try {
-      
       setLoading(true);
 
-      const response = await fetch(url
-      );
-      
+      const response = await fetch(url);
+
       if (response) {
         const data = await response.json();
-        console.log(data.routes);
 
         const encoded = data.routes[0].overview_polyline.points;
         const coordinates = polyline
@@ -110,14 +105,11 @@ export default function AddMap() {
         setDistance(distance);
         setDuongdi(coordinates);
         setLoading(false);
-        
       }
     } catch (error) {
       console.error("Error fetching direction:", error);
     }
-    
   };
-
 
   const ChangeUserLocation = (latitude, longitude) => {
     setUserLocation({ latitude: latitude, longitude: longitude });
@@ -149,15 +141,16 @@ export default function AddMap() {
       if (response) {
         address = response.data.results[0].formatted_address;
       }
+
       const DIACHI = {
         address: address,
         latitude: userLocation.latitude,
         longitude: userLocation.longitude,
-      }
+        type: 'default',
+        title: 'Tieu de'
+      };
 
-      AsyncStorage.setItem("DIACHI", JSON.stringify(DIACHI));
-      console.log('Da Luu');
-      
+      console.log("Da Luu");
     }
   };
 
@@ -178,6 +171,12 @@ export default function AddMap() {
   if (isFocus) {
     return (
       <View style={styles.container}>
+        {isLoading && (
+          <View>
+            <Text>Lan dau nen hoi lau, doi xiuuu nhaaa!</Text>
+          </View>
+        )}
+
         {!isLoading && (
           <MapView
             style={styles.map}
@@ -239,20 +238,29 @@ export default function AddMap() {
             /> */}
           </MapView>
         )}
-        <TouchableOpacity
-          style={styles.editBtn}
-          onPress={() => {
-            setPress(!canPress);
-          }}
-        ></TouchableOpacity>
-        <SearchAddress
-          Direction={direction}
-          setUserLocation={ChangeUserLocation}
-          setTyping={setTyping}
-        />
-        <TouchableOpacity style={styles.saveBtn} onPress={PopUp}>
-          <Text style={styles.saveText}>Lưu địa chỉ</Text>
-        </TouchableOpacity>
+
+        {!isLoading && (
+          <TouchableOpacity
+            style={styles.editBtn}
+            onPress={() => {
+              setPress(!canPress);
+            }}
+          >
+            { !canPress ? <IconMater name="touch-app" size={24} /> : <IconMater name="cancel" size={24}/>}
+          </TouchableOpacity>
+        )}
+        {!isLoading && (
+          <SearchAddress
+            Direction={direction}
+            setUserLocation={ChangeUserLocation}
+            setTyping={setTyping}
+          />
+        )}
+        {!isLoading && (
+          <TouchableOpacity style={styles.saveBtn} onPress={PopUp}>
+            <Text style={styles.saveText}>Lưu địa chỉ</Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
   } else {
@@ -286,14 +294,14 @@ const styles = StyleSheet.create({
   },
   editBtn: {
     margin: 4,
-    width: "10%",
-    height: 40,
+    width: "13%",
+    height: 52,
     position: "absolute",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "green",
-    bottom: "15%",
-    right: 24,
+    bottom: "20%",
+    right: 20,
     zIndex: 5,
   },
 });

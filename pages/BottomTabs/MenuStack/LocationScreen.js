@@ -7,25 +7,27 @@ import {
 } from "react-native";
 import Cpn_Location from "../../../components/Cpn_Location";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
+import IconAnt from 'react-native-vector-icons/AntDesign';
 
 export default function LocationScreen() {
   const navigation = useNavigation();
   const [isFocus, setFocus] = useState(false);
+  const [diachi, setDiachi] = useState([]);
+  const getDiachi = () => {
+    
+  }
   useEffect(() => {
-   
+  
   }, []);
 
   useFocusEffect(
     React.useCallback(() => {
       // Màn hình được focus
-      AsyncStorage.getItem('DIACHI', (err, result) => {
-        console.log(result);
-      })
+     
       setFocus(true);
       // console.log("Screen is focused");
-
+      
       return () => {
         // Màn hình bị unfocus
         setFocus(false);
@@ -34,21 +36,30 @@ export default function LocationScreen() {
     }, [])
   );
 
+  const data = [
+    { id: 1, name: 'Item 1' },
+    { id: 2, name: 'Item 2' },
+    { id: 3, name: 'Item 3' }
+];
+
   return (
     <ImageBackground
       source={require("../../../assets/background_location.png")}
       style={styles.backgroundImg}
     >
       <View style={styles.container}>
-        <Cpn_Location />
-        <Cpn_Location />
+        { data.map(({ item, index }) => (
+            <Cpn_Location/>
+          ))}
       </View>
       <TouchableOpacity
         style={styles.addBtn}
         onPress={() => {
           navigation.navigate("AddLocation");
         }}
-      ></TouchableOpacity>
+      >
+        <IconAnt name="plus" size={60} color={'#fff'}/>
+      </TouchableOpacity>
     </ImageBackground>
   );
 }
@@ -72,5 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FA4A0C",
     bottom: 24,
     right: 24,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

@@ -60,11 +60,11 @@ export default function LoginScreen() {
         <View style={[styles.inputContainer, emailError ? {borderColor: 'red'} : null]}>
          <Icon name="envelope" size={20} color={emailError ? "red" : "black"} style={styles.icon} />
           <TextInput 
-          style={styles.input}
-          placeholder='Nhập email'
-          autoCapitalize='none'
-          value={email}
-          onChangeText={setEmail}
+            style={styles.input}
+            placeholder='Nhập email'
+            autoCapitalize='none'
+            value={email}
+            onChangeText={setEmail}
           />
         </View>
         {emailError ? <Text style={styles.errorText}>{emailError}</Text> : <Text style={styles.errorText}></Text>}
@@ -75,12 +75,12 @@ export default function LoginScreen() {
         <View style={[styles.inputContainer, passwordError ? {borderColor: 'red'} : null]}>
           <Icon name="lock" size={27} color={passwordError ? "red" : "black"} style={styles.icon} />
           <TextInput 
-          style={styles.input}
-          placeholder='Nhập mật khẩu'
-          autoCapitalize='none'
-          secureTextEntry={!showPassword}
-          value={password}
-          onChangeText={setPassword}
+            style={styles.input}
+            placeholder='Nhập mật khẩu'
+            autoCapitalize='none'
+            secureTextEntry={!showPassword}
+            value={password}
+            onChangeText={setPassword}
           />
           {password.length > 0 && (
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
