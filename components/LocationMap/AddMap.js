@@ -14,7 +14,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import SearchAddress from "../../components/LocationMap/SearchAddress";
 import polyline from "@mapbox/polyline";
 import IconMater from "react-native-vector-icons/MaterialIcons";
-import { addMap } from "../../services/api";
+import { addAddress, addMap } from "../../services/api";
 
 
 export default function AddMap() {
@@ -77,9 +77,9 @@ export default function AddMap() {
         console.log("Directed");
         setDistance(distance);
         setDuongdi(coordinates);
-        
+        setLoading(false);
       }
-      setLoading(false);
+      
     };
 
     getLocation();
@@ -88,18 +88,16 @@ export default function AddMap() {
   const direction = async (lat, long) => {
     const origin = lat + "," + long;
     const url =
-      `https://rsapi.goong.io/direction?origin=` +
+      "https://rsapi.goong.io/direction?origin=" +
       origin +
       "&destination=10.882245102818498,106.78249876263239&vehicle=car&api_key=GKkG446Pg4YiEAnnW6z15pGzLALuh1WSBShBZBOW";
 
     try {
       setLoading(true);
 
-      const response = await fetch(url);
-
-      if (response) {
-        const data = await response.json();
-
+      const response = await axios.get(url);
+      const data = response.data;
+      if (data) {
         const encoded = data.routes[0].overview_polyline.points;
         const coordinates = polyline
           .decode(encoded)
@@ -154,9 +152,9 @@ export default function AddMap() {
         title: 'Tieu de'
       };
 
-      const res = await addMap(DIACHI);
+      const res = await addAddress(DIACHI);
       if (res){
-        navigation.navigate("Location");
+        navigation.goBack();
       }
     }
   };
