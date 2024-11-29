@@ -10,11 +10,12 @@ import {
 import MapView, { Circle, Marker, Polyline } from "react-native-maps";
 import * as Location from "expo-location";
 import axios from "axios";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import SearchAddress from "../../components/LocationMap/SearchAddress";
-import { TextInput } from "react-native-gesture-handler";
 import polyline from "@mapbox/polyline";
 import IconMater from "react-native-vector-icons/MaterialIcons";
+import { addMap } from "../../services/api";
+
 
 export default function AddMap() {
   const FOOD_RUSH_LOCATION = {
@@ -40,6 +41,8 @@ export default function AddMap() {
   const [isTyping, setTyping] = useState(false);
   const [isFocus, setFocus] = useState(false);
 
+  const navigation = useNavigation();
+
   useEffect(() => {
     const getLocation = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -58,7 +61,7 @@ export default function AddMap() {
 
       const origin = x.latitude + "," + x.longitude;
       const url =
-        `https://rsapi.goong.io/direction?origin=` +
+        "https://rsapi.goong.io/direction?origin=" +
         origin +
         "&destination=10.882245102818498,106.78249876263239&vehicle=car&api_key=GKkG446Pg4YiEAnnW6z15pGzLALuh1WSBShBZBOW";
       const response = await fetch(url);
@@ -74,8 +77,9 @@ export default function AddMap() {
         console.log("Directed");
         setDistance(distance);
         setDuongdi(coordinates);
-        setLoading(false);
+        
       }
+      setLoading(false);
     };
 
     getLocation();
@@ -150,7 +154,10 @@ export default function AddMap() {
         title: 'Tieu de'
       };
 
-      console.log("Da Luu");
+      const res = await addMap(DIACHI);
+      if (res){
+        navigation.navigate("Location");
+      }
     }
   };
 

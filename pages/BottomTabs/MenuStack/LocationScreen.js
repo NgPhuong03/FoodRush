@@ -49,7 +49,7 @@ export default function LocationScreen() {
     >
       <View style={styles.container}>
         { data.map(({ item, index }) => (
-            <Cpn_Location/>
+            <Cpn_Location key={index}/>
           ))}
       </View>
       <TouchableOpacity
