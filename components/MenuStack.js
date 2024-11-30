@@ -2,6 +2,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import MenuScreen from "../pages/BottomTabs/MenuStack/Menu";
 import LocationStack from "./LocationStack";
 import ProfileScreen from "../pages/BottomTabs/OrderStack/ProfileScreen";
+import { StyleSheet } from "react-native";
 
 const Stack = createStackNavigator();
 
@@ -14,3 +15,5 @@ export default function MenuStack() {
   </Stack.Navigator>
   );
 }
+
+

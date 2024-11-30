@@ -1,5 +1,7 @@
+import axios from "axios";
 import React, { createContext, useEffect, useState } from "react";
 import { Alert, ActivityIndicator, StyleSheet, View } from "react-native";
+import { login } from "../services/api";
 
 // Tạo Context
 const AuthContext = createContext();
@@ -7,17 +9,29 @@ const AuthContext = createContext();
 // Tạo Provider
 const AuthContextProvider = ({ children }) => {
   const [isAuthenticated, setAuthenticated] = useState(false);
+  const [user, setUser] = useState({});
 
-  const LogIn =() => {
-    setAuthenticated(true);
-  }
+  const LogIn = async (form) => {
+    console.log("Đang gọi LogIn");
+    const res = await login(form);
+    console.log("Đã gọi Login")
+    if (res) {
+      setUser({
+        email: form.email,
+        password: form.password,
+        role: res.role,
+        id: res.id
+      });
+      setAuthenticated(true);
+    }
+  };
 
-  const LogOut =() => {
+  const LogOut = () => {
     setAuthenticated(false);
-  }
+  };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, LogIn, LogOut}}>
+    <AuthContext.Provider value={{ isAuthenticated, LogIn, LogOut, user }}>
       {children}
     </AuthContext.Provider>
   );

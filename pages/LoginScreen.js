@@ -14,8 +14,8 @@ import { AuthContext } from '../contexts/AuthContext';
 
 export default function LoginScreen() {
   const {LogIn} = useContext(AuthContext);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('Ml@gmail.com');
+  const [password, setPassword] = useState('123123');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [showPassword, setShowPassword] = useState(false)
@@ -49,7 +49,8 @@ export default function LoginScreen() {
     }
 
     if (valid) {
-      LogIn(); // Gọi hàm đăng nhập nếu mọi thứ hợp lệ
+      const formLogin = {email: email, password: password};
+      LogIn(formLogin); // Gọi hàm đăng nhập nếu mọi thứ hợp lệ
     }
   };
 
@@ -104,7 +105,7 @@ export default function LoginScreen() {
 
 
       <View style={styles.loginContainer}>
-        <TouchableOpacity onPress={LogIn} style={styles.btn}>
+        <TouchableOpacity onPress={handleLogin} style={styles.btn}>
           <Text style={styles.txtLogin}>Đăng nhập</Text>
         </TouchableOpacity>
       </View>
