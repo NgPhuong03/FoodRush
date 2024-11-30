@@ -61,3 +61,13 @@ export const firstCallMap = async () => {
 
   console.log('Tested ok');
 };
+
+export const getUser = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/users/${user_id}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return "Loi";
+};

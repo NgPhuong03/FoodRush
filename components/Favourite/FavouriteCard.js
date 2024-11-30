@@ -9,7 +9,7 @@ import {
   } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-export default function FavouriteCart({item, onAddToCart}){
+export default function FavouriteCart({item, onAddToCart, onUnLike}){
 
     return(
         <View style={styles.CartContainer}>
@@ -82,7 +82,9 @@ export default function FavouriteCart({item, onAddToCart}){
                         />
                     </TouchableOpacity>                   
                     
-                    <TouchableOpacity style={{
+                    <TouchableOpacity 
+                        onPress={onUnLike}
+                        style={{
                             justifyContent: "center",
                             alignItems: "center",
                             marginTop: 15,
