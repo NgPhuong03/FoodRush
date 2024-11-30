@@ -8,6 +8,7 @@ import {
   TextInput, 
 } from 'react-native';
 import Icon from "react-native-vector-icons/FontAwesome";
+import { signUp } from '../services/api';
 
 export default function SignUpScreen() {
   const [email, setEmail] = useState('');
@@ -59,7 +60,10 @@ export default function SignUpScreen() {
     }
 
     if (valid) {
-      // Tiến hành đăng ký (SignUp logic)
+      const signupForm = {
+
+      };
+      // signUp();
       console.log('SignUp thành công!');
     }
   };

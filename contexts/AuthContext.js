@@ -13,6 +13,8 @@ const AuthContextProvider = ({ children }) => {
 
   const LogIn = async (form) => {
     const res = await login(form);
+    console.log(res);
+    
     if (res) {
       setUser({
         email: form.email,

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://192.168.1.8:8080/api";
+const API_URL = "http://192.168.1.4:8080/api";
 // const API_URL = 'http://fakestoreapi.com';
 
 let user_id;
@@ -8,11 +8,25 @@ let user_id;
 // Authentication
 
 export const login = async (form) => {
-  const response = await axios.post(`${API_URL}/auth/login`, form);
-  user_id = response.data.id;
-  firstCallMap();
-  return response.data;
+  try {
+    const response = await axios.post(`${API_URL}/auth/login`, form);
+    user_id = response.data.id;
+    firstCallMap();
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
 };
+
+export const signUp = async (form) => {
+  try {
+    const response = await axios.post(`${API_URL}/users`, form);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return "Loi";
+}
 
 // Product
 
