@@ -15,7 +15,8 @@ const AuthContextProvider = ({ children }) => {
     console.log("Đang gọi LogIn");
     const res = await login(form);
     console.log("Đã gọi Login")
-    if (res) {
+    
+    if (res.code == 1000 ) {
       setUser({
         email: form.email,
         password: form.password,
@@ -23,7 +24,9 @@ const AuthContextProvider = ({ children }) => {
         id: res.id
       });
       setAuthenticated(true);
+
     }
+    return res;
   };
 
   const LogOut = () => {
