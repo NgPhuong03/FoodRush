@@ -17,7 +17,7 @@ import ProductCart from "../../components/Home/ProductCart";
 import Banner from "../../components/Home/Banner";
 import CategoriesCart from "../../components/Home/CategoriesCart";
 import { CategoryData } from "../../data/Category";
-
+import BottomSheetComponent from "../../components/BottomSheet";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -198,7 +198,12 @@ export default function HomeScreen() {
       </Animated.ScrollView>
 
       {/* Bottom Sheet */}
-      <BottomSheet ref={bottomSheetRef} index={-1} snapPoints={snapPoints} enablePanDownToClose>
+      <BottomSheetComponent
+        bottomSheetRef={bottomSheetRef}
+        snapPoints={snapPoints}
+        selectedProduct={selectedProduct}
+      />
+      {/* <BottomSheet ref={bottomSheetRef} index={-1} snapPoints={snapPoints} enablePanDownToClose>
         <BottomSheetView style={styles.contentContainer}>
           {selectedProduct ? (
             <Text style={{ fontSize: 18, fontWeight: "bold" }}>{selectedProduct.name}</Text>
@@ -206,7 +211,8 @@ export default function HomeScreen() {
             <Text>Không có sản phẩm nào được chọn</Text>
           )}
         </BottomSheetView>
-      </BottomSheet>
+      </BottomSheet> */}
+
 
     </View>
   );

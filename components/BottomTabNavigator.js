@@ -39,6 +39,7 @@ export default function BottomTabNavigatior() {
       />
       <Tab.Screen name="Cart" component={CartStack}   
         options={{
+          tabBarActiveTintColor:"#FFF",
           tabBarIcon: ({size, color, focused }) => 
             (
             <View style={[styles.cartWrapper, focused && styles.activeCart]}>
@@ -49,14 +50,14 @@ export default function BottomTabNavigatior() {
       />
       <Tab.Screen name="Order" component={OrderTopTabStack} 
           options={{
-            tabBarIcon: ({ color, size, focused }) => (
+            tabBarIcon: ({ color, size }) => (
                 <Icon6 name="bag-shopping" size={size} color={color} />
             ),
           }}
       />
       <Tab.Screen name="Menu" component={MenuStack} 
           options={{
-            tabBarIcon: ({ color, size, focused }) => (
+            tabBarIcon: ({ color, size }) => (
                 <Icon name="navicon" size={size} color={color} />
             ),
           }}
@@ -66,20 +67,6 @@ export default function BottomTabNavigatior() {
 }
 
 const styles = StyleSheet.create({
-  soluong:{
-    width: 20,
-    height: 20,
-    position: 'absolute',
-    justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'red',
-      bottom: 15
-  },
-  soluongText:{
-      position: 'absolute',
-      color: '#fff',
-      fontSize: 13
-  },
   cartWrapper: {
     position: "absolute",
     top: -40, // Đẩy biểu tượng Cart lên phía trên thanh navigation
@@ -96,4 +83,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     borderWidth: 0.5
   },
+  activeCart: {
+    backgroundColor: "rgba(250, 74, 12, 0.9)",
+  }
 })

@@ -104,7 +104,7 @@ export default function LoginScreen() {
 
 
       <View style={styles.loginContainer}>
-        <TouchableOpacity onPress={handleLogin} style={styles.btn}>
+        <TouchableOpacity onPress={LogIn} style={styles.btn}>
           <Text style={styles.txtLogin}>Đăng nhập</Text>
         </TouchableOpacity>
       </View>
