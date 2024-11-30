@@ -12,7 +12,9 @@ const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState({});
 
   const LogIn = async (form) => {
+    console.log("Đang gọi LogIn");
     const res = await login(form);
+    console.log("Đã gọi Login")
     if (res) {
       setUser({
         email: form.email,

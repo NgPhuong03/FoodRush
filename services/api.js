@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const API_URL = "http://192.168.1.8:8080/api";
-// const API_URL = 'http://fakestoreapi.com';
+//const API_URL = "http://192.168.1.8:8080/api";
+const API_URL = "http://192.168.137.1:8080/api";
 
 let user_id;
 
@@ -9,6 +9,7 @@ let user_id;
 
 export const login = async (form) => {
   const response = await axios.post(`${API_URL}/auth/login`, form);
+  console.log("respone"+response)
   user_id = response.data.id;
   firstCallMap();
   return response.data;
