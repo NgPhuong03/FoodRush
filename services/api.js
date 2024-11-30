@@ -1,21 +1,20 @@
 import axios from "axios";
 
+// const API_URL = "http://192.168.137.1:8080/api";
 const API_URL = "http://192.168.1.4:8080/api";
-// const API_URL = 'http://fakestoreapi.com';
 
 let user_id;
 
 // Authentication
 
 export const login = async (form) => {
-  try {
-    const response = await axios.post(`${API_URL}/auth/login`, form);
+  const response = await axios.post(`${API_URL}/auth/login`, form);
+  if (response.data.code == 1000) {
     user_id = response.data.id;
-    firstCallMap();
-    return response.data;
-  } catch (error) {
-    console.log(error);
+    console.log("respone" + response.data);
   }
+  // firstCallMap();
+  return response.data;
 };
 
 export const signUp = async (form) => {
@@ -26,7 +25,7 @@ export const signUp = async (form) => {
     console.log(error);
   }
   return "Loi";
-}
+};
 
 // Product
 
@@ -72,5 +71,5 @@ export const firstCallMap = async () => {
     "https://rsapi.goong.io/direction?origin=10.882245102818498,106.78249876263239&destination=10.7364299,106.7389477&vehicle=car&api_key=GKkG446Pg4YiEAnnW6z15pGzLALuh1WSBShBZBOW"
   );
 
-  console.log('Tested ok');
+  console.log("Tested ok");
 };

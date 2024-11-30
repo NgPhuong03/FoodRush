@@ -6,27 +6,30 @@ import AuthenticationStack from "./components/AuthenticationStack";
 import { StatusBar } from "expo-status-bar";
 import BottomTabNavigatior from "./components/BottomTabNavigator";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import BottomSheet, { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 function ScreenStack() {
   const { isAuthenticated } = useContext(AuthContext);
   const { width, height } = Dimensions.get("window");
   return (
     <NavigationContainer>
-      <View style={{ marginTop: height * 0.05}}>
-        <StatusBar style="auto" backgroundColor="transparent" />
-      </View>
-      {!isAuthenticated && (
-        <SafeAreaView style={styles.container}>
-          <Image 
-            source={require('./assets/logo.png')}
-            style={styles.logo}
-          />
-        </SafeAreaView>
-      )}
-
-
-
-      {isAuthenticated ? <BottomTabNavigatior /> : <AuthenticationStack />}
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <BottomSheetModalProvider>
+          <View style={{ marginTop: height * 0.05}}>
+            <StatusBar style="auto" backgroundColor="transparent" />
+          </View>
+          {!isAuthenticated && (
+            <SafeAreaView style={styles.container}>
+              <Image 
+                source={require('./assets/logo.png')}
+                style={styles.logo}
+              />
+            </SafeAreaView>
+          )}
+          {isAuthenticated ? <BottomTabNavigatior /> : <AuthenticationStack />}
+        </BottomSheetModalProvider>
+      </GestureHandlerRootView>
     </NavigationContainer>
   );
 }
