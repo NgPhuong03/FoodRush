@@ -10,12 +10,10 @@ export const CartData = [
         "quantity": 5,
         "addons": {
             "pepsi": {
-                "isHave": true,
                 "quantity": 4,
                 "cost_pepsi": 10000
             },
             "sting": {
-                "isHave": true,
                 "quantity": 6,
                 "cost_sting": 12000
             }
@@ -32,12 +30,10 @@ export const CartData = [
         "quantity": 2,
         "addons": {
             "pepsi": {
-                "isHave": false,
                 "quantity": 0,
                 "cost_pepsi": 10000
             },
             "sting": {
-                "isHave": true,
                 "quantity": 3,
                 "cost_sting": 12000
             }
@@ -54,12 +50,10 @@ export const CartData = [
         "quantity": 2,
         "addons": {
             "pepsi": {
-                "isHave": false,
                 "quantity": 0,
                 "cost_pepsi": 10000
             },
             "sting": {
-                "isHave": false,
                 "quantity": 0,
                 "cost_sting": 12000
             }
@@ -76,12 +70,10 @@ export const CartData = [
         "quantity": 2,
         "addons": {
             "pepsi": {
-                "isHave": false,
                 "quantity": 0,
                 "cost_pepsi": 10000
             },
             "sting": {
-                "isHave": false,
                 "quantity": 0,
                 "cost_sting": 12000
             }
@@ -98,12 +90,10 @@ export const CartData = [
         "quantity": 2,
         "addons": {
             "pepsi": {
-                "isHave": true,
                 "quantity": 2,
                 "cost_pepsi": 10000
             },
             "sting": {
-                "isHave": false,
                 "quantity": 0,
                 "cost_sting": 12000
             }
@@ -120,12 +110,10 @@ export const CartData = [
         "quantity": 12,
         "addons": {
             "pepsi": {
-                "isHave": true,
                 "quantity": 4,
                 "cost_pepsi": 10000
             },
             "sting": {
-                "isHave": true,
                 "quantity": 2,
                 "cost_sting": 12000
             }
@@ -141,12 +129,10 @@ export const CartData = [
         "quantity": 2,
         "addons": {
             "pepsi": {
-                "isHave": false,
                 "quantity": 0,
                 "cost_pepsi": 10000
             },
             "sting": {
-                "isHave": false,
                 "quantity": 0,
                 "cost_sting": 12000
             }
@@ -163,12 +149,10 @@ export const CartData = [
         "quantity": 2,
         "addons": {
             "pepsi": {
-                "isHave": false,
                 "quantity": 0,
                 "cost_pepsi": 10000
             },
             "sting": {
-                "isHave": false,
                 "quantity": 0,
                 "cost_sting": 12000
             }

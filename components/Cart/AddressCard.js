@@ -7,7 +7,7 @@ import Icon from "react-native-vector-icons/FontAwesome6";
 
 
 
-export default function AddressCard(){
+export default function AddressCard({isPay}){
     const [user, setUser] = useState()
     const [address, setAddress] = useState()
     const [isLoading, setIsLoading] = useState(true);
@@ -17,9 +17,9 @@ export default function AddressCard(){
             const resAddress = await getAddress();
             const resUser = await getUser();
             console.log(resAddress)
-            console.log(resUser);
+            console.log(resUser.result);
             setAddress(resAddress);
-            setUser(resUser);
+            setUser(resUser.result);
             setIsLoading(false);
         };
         Loaddata();
@@ -29,37 +29,65 @@ export default function AddressCard(){
         return null
     }
 
-    return (
-        <View style={styles.container}>
-            <View style={{
-                width: "20%", 
-                justifyContent: "flex-start",
-                paddingLeft: 20,
-                paddingTop: 10
-            }}>
-                    <Icon name="map-location-dot" size={24} color={"#FA4A0C"}/>
+    if(isPay == true){
+        return (
+            <View style={styles.container}>
+                <View style={{
+                    width: "20%", 
+                    justifyContent: "flex-start",
+                    paddingLeft: 20,
+                    paddingTop: 10
+                }}>
+                        <Icon name="map-location-dot" size={24} color={"#FA4A0C"}/>
+                </View>
+    
+                <View style={{width: "65%"}}>
+                    <Text style={styles.titleAddress}>Địa chỉ nhận hàng</Text>
+                    <Text style={styles.address}>
+                        {user.name} | {user.phone_number}
+                    </Text>
+                    <Text style={styles.address} numberOfLines={2}>
+                        {address[0].address}
+                    </Text>
+                </View>
+    
+                <View style={{
+                    width: "15%", 
+                    justifyContent: "center", 
+                    paddingLeft: 10
+                }}>
+                    <Icon name="chevron-right" size={24}/>
+                </View>
+    
             </View>
+        )
+    }
 
-            <View style={{width: "65%"}}>
-                <Text style={styles.titleAddress}>Địa chỉ nhận hàng</Text>
-                <Text style={styles.address}>
-                    {user.name} | {user.phone_number}
-                </Text>
-                <Text style={styles.address} numberOfLines={2}>
-                    {address[0].address}
-                </Text>
+    if (isPay == false){
+        return (
+            <View style={styles.container}>
+                <View style={{
+                    width: "20%", 
+                    justifyContent: "flex-start",
+                    paddingLeft: 20,
+                    paddingTop: 10
+                }}>
+                        <Icon name="map-location-dot" size={24} color={"#FA4A0C"}/>
+                </View>
+    
+                <View style={{width: "80%"}}>
+                    <Text style={styles.titleAddress}>Địa chỉ nhận hàng</Text>
+                    <Text style={styles.address}>
+                        {user.name} | {user.phone_number}
+                    </Text>
+                    <Text style={styles.address} numberOfLines={2}>
+                        {address[0].address}
+                    </Text>
+                </View>    
             </View>
+        )
+    }
 
-            <View style={{
-                width: "15%", 
-                justifyContent: "center", 
-                paddingLeft: 10
-            }}>
-                <Icon name="chevron-right" size={24}/>
-            </View>
-
-        </View>
-    )
 }
 
 const styles = StyleSheet.create({
@@ -82,6 +110,7 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         elevation: 5,
         shadowOpacity: 0.3,
+        marginBottom: 10
     },
     titleAddress: {
         fontSize: 18,

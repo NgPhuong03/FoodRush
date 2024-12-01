@@ -9,22 +9,14 @@ import {
   } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-export default function FoodCardInCart({item, onIncrease, onDecrease, onRemove}){
+export default function FoodCardInOrder({item}){
 
     return(
         <View style={styles.CartContainer}>
             {/* Thẻ giảm giá */}
-            {item.discount > 0 
-                ?
-                <View style={styles.discountContainer}>
-                    <Text style={styles.txtDiscount}>{item.discount}% off</Text>
-                </View>
-                : null
-            }
-
             <View style={styles.ChildContainer}>
                 {/* Hình ảnh sản phẩm  */}
-                <View style={{alignSelf: "stretch", width: "25%" }}>
+                <View style={{alignSelf: "stretch", width: "30%" }}>
                     <Image
                         source={{ uri: item.image }} // Hiển thị ảnh từ URL
                         style={styles.productImage}
@@ -107,56 +99,13 @@ export default function FoodCardInCart({item, onIncrease, onDecrease, onRemove})
                     }
                 </View>
 
-                {/* Icon bên phải cùng  */}
-                <View style={{
-                    width: "20%",
+                <Text style={{
+                    marginLeft: -50,
                     height: "100%",
-                    paddingTop: 50,
-                    marginLeft: -10
-                }}>
-                    <View style={{flexDirection: "row"}}>
-                        <TouchableOpacity 
-                            onPress={onDecrease}
-                            style={{
-                                    justifyContent: "center",
-                                    alignItems: "center",
-
-                                }}
-                        >
-                            <Icon name="minus-circle" size={24} color={'#FA4A0C'}  />
-                        </TouchableOpacity> 
-
-                        <Text style={{
-                            marginHorizontal: 10,
-                            fontSize: 16,
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}>
-                            {item.quantity}
-                        </Text>
-
-                        <TouchableOpacity 
-                            onPress={onIncrease}
-                            style={{
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                        >
-                            <Icon name="plus-circle" size={24} color={'#FA4A0C'}  />
-                        </TouchableOpacity> 
-                    </View>
-                  
-                    
-                    <TouchableOpacity 
-                        onPress={onRemove}
-                        style={{
-                            justifyContent: "center",
-                            alignItems: "center",
-                            marginTop: 20,
-                        }}>
-                        <Icon name="trash" size={24} color="black"/>
-                    </TouchableOpacity>
-                </View>
+                    paddingTop: 30,
+                    fontSize: 15,
+                    fontWeight: "500"
+                }}>Số lượng: {item.quantity}</Text>
             </View>
 
 
