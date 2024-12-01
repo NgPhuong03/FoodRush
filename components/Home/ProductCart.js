@@ -14,10 +14,10 @@ export default function ProductCart({item}){
     return(
         <View style={styles.CartContainer}>
             {/* Thẻ giảm giá */}
-            {item.discount > 0 
+            {item.sale > 0 
                 ?
                 <View style={styles.discountContainer}>
-                    <Text style={styles.txtDiscount}>{item.discount}% off</Text>
+                    <Text style={styles.txtDiscount}>{item.sale}% off</Text>
                 </View>
                 : null
             }
@@ -36,13 +36,13 @@ export default function ProductCart({item}){
                 </View>
 
                 <View style={styles.CostContainer} >
-                {item.discount > 0 ? (
+                {item.sale > 0 ? (
                         <>
                         <Text style={styles.txtCost}>
                             {item.cost.toLocaleString("vi-VN")}đ
                         </Text>
                         <Text style={styles.txtCostDaGiam}>
-                            {(item.cost - (item.cost * item.discount) / 100).toLocaleString("vi-VN")}đ
+                            {(item.cost - (item.cost * item.sale) / 100).toLocaleString("vi-VN")}đ
                         </Text>
                         </>
                     ) : (

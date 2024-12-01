@@ -149,7 +149,8 @@ export default function AddMap() {
         latitude: userLocation.latitude,
         longitude: userLocation.longitude,
         type: 'default',
-        title: 'Tieu de'
+        title: 'Tieu de',
+        distance: khoangcach
       };
 
       const res = await addAddress(DIACHI);

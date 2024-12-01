@@ -9,7 +9,7 @@ import {
   Animated,
   ScrollView
 } from "react-native";
-import React, { useRef, useMemo, useState } from "react";
+import React, { useRef, useMemo, useState, useEffect } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { ProductData } from "../../data/Product";
@@ -18,16 +18,36 @@ import Banner from "../../components/Home/Banner";
 import CategoriesCart from "../../components/Home/CategoriesCart";
 import { CategoryData } from "../../data/Category";
 import BottomSheetComponent from "../../components/BottomSheet";
+import axios from "axios";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
   const [selectedProduct, setSelectedProduct] = useState(null); // Lưu sản phẩm được chọn
   const bottomSheetRef = useRef(null);
+  const [data, setData] = useState({});
+  const [isLoading, setLoading] = useState(true);
   const scrollY = useRef(new Animated.Value(0)).current;
   // Các điểm snap
   const snapPoints = useMemo(() => ["25%", "80%"], []);
 
   const [scrollProgress, setScrollProgress] = useState(0); // Lưu trạng thái tiến trình cuộn
+
+  useEffect(() => {
+    
+    const get = async () => {
+      
+      const res = await axios.get('http://192.168.1.4:8080/api/foods/alltop');
+      const x = res.data
+      
+      if (x){
+
+        setData(x);
+        setLoading(false)
+      }
+
+    }
+    get();
+  }, [])
 
   const handleProductPress = (product) => {
     setSelectedProduct(product); // Cập nhật sản phẩm được chọn
@@ -120,7 +140,7 @@ export default function HomeScreen() {
 
           <View>
             <FlatList
-              data={ProductData}
+              data={data.topSale}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => handleProductPress(item)}>
@@ -151,7 +171,7 @@ export default function HomeScreen() {
 
           <View>
             <FlatList
-              data={ProductData}
+              data={data.topRating}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => handleProductPress(item)}>
@@ -178,7 +198,7 @@ export default function HomeScreen() {
 
           <View>
             <FlatList
-              data={ProductData}
+              data={data.topOrder}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => handleProductPress(item)}>
