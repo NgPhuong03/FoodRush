@@ -12,7 +12,7 @@ const Stack = createStackNavigator();
 const TopTab = () => {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Đơn hàng" component={OrderScreen} />
+      <Tab.Screen name="Đang nấu" component={OrderScreen} />
       <Tab.Screen name="Đang giao" component={DeliveringScreen} />
       <Tab.Screen name="Lịch sử" component={HistoryScreen} />
     </Tab.Navigator>

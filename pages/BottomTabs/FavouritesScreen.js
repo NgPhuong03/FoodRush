@@ -8,19 +8,25 @@ import {
 } from 'react-native';
 import React, { useRef, useMemo, useState } from "react";
 import BottomSheetComponent from '../../components/BottomSheet';
-import FavouriteCart from '../../components/Favourite/FavouriteCart';
+import FavouriteCart from '../../components/Favourite/FavouriteCard';
 import { FavouriteData } from '../../data/Favourite/Favourite';
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 
 export default function FavoritesScreen() {
-  const [selectedProduct, setSelectedProduct] = useState(null); // Lưu sản phẩm được chọn
+  const [favourite, setFavourite] = useState(FavouriteData)
+  const [selectedCartProduct, setSelectedCartProduct] = useState(null); // Lưu sản phẩm được chọn
   const snapPoints = useMemo(() => ["25%", "80%"], []);
   const bottomSheetRef = useRef(null);
 
   const handleProductPress = (item) => {
-    setSelectedProduct(item); // Cập nhật sản phẩm được chọn
+    setSelectedCartProduct(item); // Cập nhật sản phẩm được chọn
     bottomSheetRef.current?.expand(); // Mở BottomSheet
   };
+
+  const handleUnLike = (id) => {
+    setFavourite(prevFavourite => prevFavourite.filter(item => item.id != id))
+  }
+
 
   return (
     <View style={styles.container}>
@@ -31,13 +37,14 @@ export default function FavoritesScreen() {
 
       <View style={styles.listProduct}>
           <FlatList 
-            data={FavouriteData}
+            data={favourite}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({item}) => (
               <TouchableOpacity>
                 <FavouriteCart 
                   item={item} 
                   onAddToCart={() => handleProductPress(item)}
+                  onUnLike={() => handleUnLike(item.id)}
                 />
               </TouchableOpacity>
             )}
@@ -48,7 +55,7 @@ export default function FavoritesScreen() {
       <BottomSheetComponent
         bottomSheetRef={bottomSheetRef}
         snapPoints={snapPoints} // Các điểm dừng của Bottom Sheet
-        selectedProduct={selectedProduct} // Truyền sản phẩm được chọn
+        selectedProduct={selectedCartProduct} // Truyền sản phẩm được chọn
       />
 
     </View>

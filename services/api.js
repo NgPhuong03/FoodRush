@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// const API_URL = "http://192.168.137.1:8080/api";
+// const API_URL = "http://10.0.108.214:8080/api";
 const API_URL = "http://192.168.1.4:8080/api";
 
 let user_id;
@@ -10,7 +10,7 @@ let user_id;
 export const login = async (form) => {
   const response = await axios.post(`${API_URL}/auth/login`, form);
   if (response.data.code == 1000) {
-    user_id = response.data.id;
+    user_id = response.data.result.id;
     console.log("respone" + response.data);
   }
   // firstCallMap();
@@ -27,12 +27,17 @@ export const signUp = async (form) => {
   return "Loi";
 };
 
-// Product
+// Food
 
-export const fetchAllProducts = async () => {
-  const response = await axios.get(`${API_URL}/products`);
+export const fetchAllTop = async () => {
+  const response = await axios.get(`${API_URL}/foods/alltop`);
   return response.data;
 };
+
+export const fetchByCategory = async (category) => {
+  const respone = await axios.get(`${API_URL}/foods/category?category=${category}`);
+  return respone.data;
+}
 
 // Address
 
@@ -62,7 +67,7 @@ export const getAddress = async () => {
   } catch (error) {
     console.log(error);
   }
-  return "Loi";
+  return "Loi lay dia chi";
 };
 
 // Cai nay goi de load map ngay tu luc dang nhap trong android
@@ -72,4 +77,14 @@ export const firstCallMap = async () => {
   );
 
   console.log("Tested ok");
+};
+
+export const getUser = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/users/${user_id}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return "Loi lay user";
 };

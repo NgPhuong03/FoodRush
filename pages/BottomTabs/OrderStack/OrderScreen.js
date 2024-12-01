@@ -1,19 +1,38 @@
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, FlatList} from 'react-native';
+import OrderCart from '../../../components/Order/OrderCard';
+import { OrderData } from '../../../data/Order/Order';
+import { useState, useEffect } from 'react';
+
 
 export default function OrderScreen() {
   const navigation = useNavigation();
+  const [order, setOrder] = useState([]);
+
+  useEffect(() => {
+    // Lọc các đơn hàng có status = 'DangNau'
+    const filteredOrders = OrderData.filter((item) => item.status === 'DangNau');
+    setOrder(filteredOrders);
+  }, []); // Chạy một lần sau khi component được mount
+
   return (
     <View style={styles.container}>
-      <Text>OrderScreen!</Text>
+      <View style={styles.listOrder}>
+          <FlatList 
+            data={order}
+            keyExtractor={(item) => item.order_id.toString()}
+            renderItem={({item}) => (
+              <TouchableOpacity>
+                <OrderCart 
+                  item={item}
+                  onFollow={() => navigation.navigate('FollowingOrder', {order_id: item.order_id})}
+                />
+              </TouchableOpacity>
+            )}
+            contentContainerStyle={{ paddingHorizontal: 10 }}
+          />
+      </View>
 
-      <TouchableOpacity style={{backgroundColor: 'lightblue'}} onPress={() => navigation.navigate('FollowingOrder')}>
-        <Text>Theo doi don hang</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={{backgroundColor: 'green'}} onPress={() => navigation.navigate('OrderDetails')}>
-        <Text>Chi tiet don hang</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -21,9 +40,14 @@ export default function OrderScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F2F2F2',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  listOrder: {
+    width: "100%",
+    height: "95%",
+    borderWidth: 1,
+  }
 
 });

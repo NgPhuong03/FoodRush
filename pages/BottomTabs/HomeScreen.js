@@ -13,12 +13,13 @@ import React, { useRef, useMemo, useState, useEffect } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { ProductData } from "../../data/Product";
-import ProductCart from "../../components/Home/ProductCart";
+import ProductCart from "../../components/Home/ProductCard";
 import Banner from "../../components/Home/Banner";
-import CategoriesCart from "../../components/Home/CategoriesCart";
+import CategoriesCart from "../../components/Home/CategoriesCard";
 import { CategoryData } from "../../data/Category";
 import BottomSheetComponent from "../../components/BottomSheet";
 import axios from "axios";
+import { fetchAllTop } from "../../services/api";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -36,12 +37,10 @@ export default function HomeScreen() {
     
     const get = async () => {
       
-      const res = await axios.get('http://192.168.1.4:8080/api/foods/alltop');
-      const x = res.data
+      const res = await fetchAllTop();
       
-      if (x){
-
-        setData(x);
+      if (res){
+        setData(res);
         setLoading(false)
       }
 
