@@ -9,30 +9,25 @@ import {
   } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-export default function FavouriteCart({item, onAddToCart}){
+export default function FoodCardInOrder({item}){
 
     return(
         <View style={styles.CartContainer}>
             {/* Thẻ giảm giá */}
-            {item.discount > 0 
-                ?
-                <View style={styles.discountContainer}>
-                    <Text style={styles.txtDiscount}>{item.discount}% off</Text>
-                </View>
-                : null
-            }
-
             <View style={styles.ChildContainer}>
                 {/* Hình ảnh sản phẩm  */}
-                <Image
-                    source={{ uri: item.image }} // Hiển thị ảnh từ URL
-                    style={styles.productImage}
-                />
+                <View style={{alignSelf: "stretch", width: "30%" }}>
+                    <Image
+                        source={{ uri: item.image }} // Hiển thị ảnh từ URL
+                        style={styles.productImage}
+                    />
+                </View>
+
 
                 {/* Tên, đánh giá, giá sản phẩm  */}
                 <View style={{
                     width: "55%",
-                    paddingHorizontal: 10
+                    paddingStart: 10,
                 }}
                 >
                     <Text style={styles.txtName} numberOfLines={2} ellipsizeMode="tail">{item.name}</Text>
@@ -46,12 +41,12 @@ export default function FavouriteCart({item, onAddToCart}){
                     <View style={styles.CostContainer} >
                     {item.discount > 0 ? (
                             <>
+                            <Text style={styles.txtCost}>
+                                {item.cost.toLocaleString("vi-VN")}đ
+                            </Text>
                             <Text style={styles.txtCostDaGiam}>
                                 {(item.cost - (item.cost * item.discount) / 100).toLocaleString("vi-VN")}đ
                             </Text>                           
-                            <Text style={[styles.txtCost, {marginStart: 10}]}>
-                                {item.cost.toLocaleString("vi-VN")}đ
-                            </Text>
                             </>
                         ) : (
                             <Text style={styles.txtCostDaGiam}>
@@ -59,40 +54,61 @@ export default function FavouriteCart({item, onAddToCart}){
                             </Text>
                         )}
                     </View>
+
+                    {/* Kèm theo  */}
+                    {item.addons.pepsi.quantity > 0 || item.addons.sting.quantity > 0 
+                        ? (
+                        <View style={{flexDirection: "row", alignItems: "baseline", height: "auto", width: "auto"}}>
+                            <Text style={{fontSize: 18, fontWeight:"600"}}>Kèm theo:{" "}
+                            {/* Kiểm tra có pepsi không  */}
+                            {item.addons.pepsi.quantity > 0 
+                                ?  ( 
+                                <Text style={{fontSize: 16, fontWeight: "450"}}>
+                                    Pepsi
+                                    ({item.addons.pepsi.quantity})
+                                </Text> 
+                                )
+                                : null
+                            }
+                            {/* Kiểm tra có sting không  */}
+                            {item.addons.sting.quantity > 0
+                                ?  ( 
+                                <Text style={{fontSize: 16, fontWeight: "450"}}>
+                                    {/* Nếu có sting thì kiểm tra tiếp trước nó pepsi không để có thể thêm dấu phẩy đúng format  */}
+                                    {item.addons.pepsi.quantity > 0
+                                        ?  ( 
+                                        <Text style={{fontSize: 16, fontWeight: "450"}}>
+                                            , Sting ({item.addons.sting.quantity})
+                                        </Text> 
+                                        )
+                                        : ( 
+                                        <Text style={{fontSize: 16, fontWeight: "450"}}>
+                                            Sting ({item.addons.sting.quantity})
+                                        </Text> 
+                                        )
+                                    }
+    
+                                </Text> 
+                                )
+                                : null
+                            }   
+                            </Text>
+                        </View>
+                        )
+                        : null
+                    }
                 </View>
 
-                <View style={{
-                    width: "15%",
+                <Text style={{
+                    marginLeft: -50,
                     height: "100%",
-                }}>
-                    <TouchableOpacity 
-                        onPress={onAddToCart}
-                        style={{
-                                justifyContent: "center",
-                                alignItems: "center",
-                                marginTop: 5
-                            }}
-                    >
-                        <Icon name="cart-plus" size={20} color={'#FA4A0C'}
-                            style={{
-                                backgroundColor: "rgba(255, 189, 115, 0.5)",
-                                padding: 10,
-                                borderRadius: 500
-                            }}
-                        />
-                    </TouchableOpacity>                   
-                    
-                    <TouchableOpacity style={{
-                            justifyContent: "center",
-                            alignItems: "center",
-                            marginTop: 15,
-                        }}>
-                        <Icon name="heart" size={20} color={'#FA4A0C'}/>
-                    </TouchableOpacity>
-
-                </View>
-
+                    paddingTop: 30,
+                    fontSize: 15,
+                    fontWeight: "500"
+                }}>Số lượng: {item.quantity}</Text>
             </View>
+
+
         </View>
     )
 }
@@ -100,22 +116,22 @@ export default function FavouriteCart({item, onAddToCart}){
 const styles = StyleSheet.create({
     CartContainer: {
         backgroundColor: "white",
-        height: 100,
+        height: "auto",
         width: "100%",
         borderRadius: 10,
-        borderWidth: 1,
         marginVertical: 5,
-        borderColor: "#ACABAB"
+        borderWidth: 0.5 ,
+        borderColor: "#ACABAB",
     },
     ChildContainer: {
         alignItems: "center",
         padding: 5,
         flexDirection: "row",
-        height: "100%"
+        height: "auto",
     },
     productImage: {
-        width: "30%",
-        height: "100%",
+        width: "100%",
+        height: 100,
         resizeMode: "cover", // Cắt ảnh nếu cần
         borderRadius: 10
     },
@@ -134,7 +150,6 @@ const styles = StyleSheet.create({
         width: "100%",
         gap: 2,
         paddingHorizontal: 2,
-
     },
     txtStar: {
         fontSize: 12,
@@ -151,31 +166,28 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     CostContainer: {
-        flexDirection: "row",
-        alignItems: "flex-end", // Căn đáy cho cả hai
+        alignItems: "flex-start", // Căn đáy cho cả hai
         width: "100%",
-        height: 30,
+        height: "auto",
         paddingHorizontal: 2,
-        gap: 2,
     },
     txtCost: {
         fontSize: 12,
         fontWeight: "400",
-        textAlign: "center",
+        textAlign: "left",
         display: "flex",
-        alignSelf: "center",
-        justifyContent: "center",
+        alignSelf: "flex-start",
         textAlignVertical: "bottom", // Nội dung nằm sát dưới
-        textDecorationLine: "line-through"
+        textDecorationLine: "line-through",
+        marginTop: 2
     },
     txtCostDaGiam: {
         fontSize: 20,
         fontWeight: "bold",
         color: "#fa4a0c",
-        textAlign: "center",
+        textAlign: "left",
         display: "flex",
-        width: "auto",
-        alignSelf: "center",
+        alignSelf: "flex-start",
         textAlignVertical: "bottom", // Nội dung nằm sát dưới
     },
     discountContainer: {

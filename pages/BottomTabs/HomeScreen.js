@@ -13,9 +13,9 @@ import React, { useRef, useMemo, useState } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { ProductData } from "../../data/Product";
-import ProductCart from "../../components/Home/ProductCart";
+import ProductCart from "../../components/Home/ProductCard";
 import Banner from "../../components/Home/Banner";
-import CategoriesCart from "../../components/Home/CategoriesCart";
+import CategoriesCart from "../../components/Home/CategoriesCard";
 import { CategoryData } from "../../data/Category";
 import BottomSheetComponent from "../../components/BottomSheet";
 
