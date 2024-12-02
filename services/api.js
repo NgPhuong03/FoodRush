@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const API_URL = "http://10.0.108.214:8080/api";
-//const API_URL = "http://192.168.1.4:8080/api";
+// const API_URL = "http://10.0.108.214:8080/api";
+const API_URL = "http://192.168.1.4:8080/api";
 
 let user_id;
 
@@ -27,12 +27,17 @@ export const signUp = async (form) => {
   return "Loi";
 };
 
-// Product
+// Food
 
-export const fetchAllProducts = async () => {
-  const response = await axios.get(`${API_URL}/products`);
+export const fetchAllTop = async () => {
+  const response = await axios.get(`${API_URL}/foods/alltop`);
   return response.data;
 };
+
+export const fetchByCategory = async (category) => {
+  const respone = await axios.get(`${API_URL}/foods/category?category=${category}`);
+  return respone.data;
+}
 
 // Address
 
