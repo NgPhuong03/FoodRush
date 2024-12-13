@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { OrderFollowingData } from '../../../data/Order/OrderFollowing';
 import FoodCardInOrder from '../../../components/Order/FoodCardInOrder';
 import AddressCard from '../../../components/Cart/AddressCard';
+import FollowingShipper from '../../../components/LocationMap/FollowingShipper';
 
 export default function FollowingOrder({route}) {
   const {order_id, created_at, paymethod, dungcu} = route.params;
@@ -47,10 +48,13 @@ export default function FollowingOrder({route}) {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.mapContainer}>
-        <Image 
+        {/* <Image 
           source={{ uri: "https://thanhnien.mediacdn.vn/Uploaded/trungnq/2022_10_29/1-2829.jpg"}} 
           style={styles.img}
-        />
+        /> */}
+        <View style={styles.img}>
+          <FollowingShipper/>
+        </View>
         <Text style={styles.txtUnderMap}>Đơn hàng của bạn sẽ được giao trong vòng 10-15 phút</Text>
       </View>
 

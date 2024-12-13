@@ -25,7 +25,6 @@ export default function AddMap() {
     longitudeDelta: 0.11545,
   };
 
-  const apiKey = "GKkG446Pg4YiEAnnW6z15pGzLALuh1WSBShBZBOW";
   const [userLocation, setUserLocation] = useState({
     latitude: 0,
     longitude: 0,
