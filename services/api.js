@@ -3,7 +3,9 @@ import axios from "axios";
 
 
 // const API_URL = "http://10.0.108.214:8080/api";
+
 const API_URL = "http://10.0.127.93:8080/api";
+
 
 let user_id;
 
@@ -60,7 +62,7 @@ export const addAddress = async (diachi) => {
     const res = await axios.post(`${API_URL}/address/${user_id}/add`, diachi);
     console.log(res.data);
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
   }
   return "ok";
 };
@@ -158,6 +160,7 @@ export const getFavorites = async () => {
     console.log(error);
     return "Lỗi khi lấy danh sách yêu thích";
   }
+
 };
 
 
@@ -170,4 +173,25 @@ export const getOrderByUserId = async () => {
     console.log(error);
     return "Lỗi khi lấy danh sách đơn hàng";
   }
+
+  return "Loi lay user";
+};
+
+
+// Phần lấy location shipper
+export const getShipperLocation = async (order_id) => {
+  const response = await axios.get(`${API_URL}/orders/${order_id}/shipper/location`);
+  if (!response){
+    console.log("Loi lay vi tri shipper");
+  }
+  return response.data.result;
+}
+
+export const getUserLocation = async (order_id) => {
+  const response = await axios.get(`${API_URL}/orders/${order_id}/user/location`);
+  if (!response){
+    console.log("Loi lay vi tri user");
+  }
+  return response.data.result;
+
 }
