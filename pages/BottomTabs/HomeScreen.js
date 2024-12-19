@@ -10,9 +10,7 @@ import {
   ScrollView
 } from "react-native";
 import React, { useRef, useMemo, useState, useEffect } from "react";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { ProductData } from "../../data/Product";
 import ProductCart from "../../components/Home/ProductCard";
 import Banner from "../../components/Home/Banner";
 import CategoriesCart from "../../components/Home/CategoriesCard";
@@ -43,15 +41,22 @@ export default function HomeScreen() {
         setData(res);
         setLoading(false)
       }
-
+      // console.log(res)
     }
     get();
   }, [])
-
+  
   const handleProductPress = (product) => {
+    bottomSheetRef.current?.expand();
     setSelectedProduct(product); // Cập nhật sản phẩm được chọn
-    bottomSheetRef.current?.expand(); // Mở BottomSheet
   };
+  
+  // Mở BottomSheet khi selectedProduct thay đổi
+  useEffect(() => {
+    if (selectedProduct && bottomSheetRef.current) {
+      console.log("Selected: ", selectedProduct.name);
+    }
+  }, [selectedProduct]);
   
 
   // Hàm xử lý sự kiện khi cuộn
@@ -142,9 +147,7 @@ export default function HomeScreen() {
               data={data.topSale}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => handleProductPress(item)}>
-                  <ProductCart item={item} />
-                </TouchableOpacity>
+                <ProductCart item={item} onSelect={() => handleProductPress(item)} />
               )}
               horizontal
               contentContainerStyle={{ paddingHorizontal: 10 }}
@@ -173,9 +176,7 @@ export default function HomeScreen() {
               data={data.topRating}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => handleProductPress(item)}>
-                  <ProductCart item={item} />
-                </TouchableOpacity>
+                <ProductCart item={item} onSelect={() => handleProductPress(item)} />
               )}
               horizontal
               contentContainerStyle={{ paddingHorizontal: 10 }}
@@ -200,9 +201,7 @@ export default function HomeScreen() {
               data={data.topOrder}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => handleProductPress(item)}>
-                  <ProductCart item={item} />
-                </TouchableOpacity>
+                  <ProductCart item={item} onSelect={() => handleProductPress(item)} />
               )}
               horizontal
               contentContainerStyle={{ paddingHorizontal: 10 }}
@@ -217,21 +216,14 @@ export default function HomeScreen() {
       </Animated.ScrollView>
 
       {/* Bottom Sheet */}
-      <BottomSheetComponent
-        bottomSheetRef={bottomSheetRef}
-        snapPoints={snapPoints}
-        selectedProduct={selectedProduct}
-      />
-      {/* <BottomSheet ref={bottomSheetRef} index={-1} snapPoints={snapPoints} enablePanDownToClose>
-        <BottomSheetView style={styles.contentContainer}>
-          {selectedProduct ? (
-            <Text style={{ fontSize: 18, fontWeight: "bold" }}>{selectedProduct.name}</Text>
-          ) : (
-            <Text>Không có sản phẩm nào được chọn</Text>
-          )}
-        </BottomSheetView>
-      </BottomSheet> */}
-
+      {selectedProduct && (
+              <BottomSheetComponent
+              bottomSheetRef={bottomSheetRef}
+              snapPoints={snapPoints}
+              selectedProduct={selectedProduct}
+            />
+      )  
+      }
 
     </View>
   );

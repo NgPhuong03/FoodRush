@@ -1,7 +1,11 @@
 import axios from "axios";
 
+
+
 // const API_URL = "http://10.0.108.214:8080/api";
-const API_URL = "http://192.168.1.4:8080/api";
+
+const API_URL = "http://10.0.127.93:8080/api";
+
 
 let user_id;
 
@@ -27,9 +31,21 @@ export const signUp = async (form) => {
   return "Loi";
 };
 
+//user 
+export const getUser = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/users/${user_id}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return "Loi lay user";
+};
+
 // Food
 
 export const fetchAllTop = async () => {
+  console.log("Load all product")
   const response = await axios.get(`${API_URL}/foods/alltop`);
   return response.data;
 };
@@ -94,13 +110,53 @@ export const firstCallMap = async () => {
   console.log("Tested ok");
 };
 
-export const getUser = async () => {
+
+export const addToCart = async (cartItem) => {
   try {
-    const response = await axios.get(`${API_URL}/users/${user_id}`);
+    // Gọi API thêm vào giỏ hàng
+    const response = await axios.post(`${API_URL}/cart/${user_id}`, cartItem);
+
+    // Kiểm tra phản hồi
+    if (response.data.code === 1000) {
+      console.log("Thêm vào giỏ hàng thành công:", response.data);
+      return response.data;
+    } else {
+      console.log("Thêm vào giỏ hàng thất bại:", response.data);
+      return response.data;
+    }
+  } catch (error) {
+    console.error("Lỗi khi thêm vào giỏ hàng:", error);
+    return {
+      code: 9999, // Mã lỗi tùy chọn
+      message: "Lỗi không xác định khi thêm vào giỏ hàng.",
+    };
+  }
+};
+
+// Favorite
+
+
+export const getFavorites = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/users/${user_id}/favorites`);
     return response.data;
   } catch (error) {
     console.log(error);
   }
+
+};
+
+
+//order
+export const getOrderByUserId = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/users/${user_id}/orders`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return "Lỗi khi lấy danh sách đơn hàng";
+  }
+
   return "Loi lay user";
 };
 
@@ -120,4 +176,5 @@ export const getUserLocation = async (order_id) => {
     console.log("Loi lay vi tri user");
   }
   return response.data.result;
+
 }
