@@ -6,17 +6,19 @@ import {
   FlatList,
   TouchableOpacity
 } from 'react-native';
-import React, { useRef, useMemo, useState } from "react";
+import React, { useRef, useMemo, useState, useEffect } from "react";
+import { Image } from 'expo-image';
+import Icon5 from 'react-native-vector-icons/FontAwesome5'
 import BottomSheetComponent from '../../components/BottomSheet';
 import FavouriteCart from '../../components/Favourite/FavouriteCard';
-import { FavouriteData } from '../../data/Favourite/Favourite';
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import { getFavorites } from '../../services/api';
 
 export default function FavoritesScreen() {
-  const [favourite, setFavourite] = useState(FavouriteData)
-  const [selectedCartProduct, setSelectedCartProduct] = useState(null); // Lưu sản phẩm được chọn
+  const [favourite, setFavourite] = useState(null)
+  const [selectedCartProduct, setSelectedCartProduct] = useState(); // Lưu sản phẩm được chọn
   const snapPoints = useMemo(() => ["25%", "80%"], []);
   const bottomSheetRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleProductPress = (item) => {
     setSelectedCartProduct(item); // Cập nhật sản phẩm được chọn
@@ -25,6 +27,55 @@ export default function FavoritesScreen() {
 
   const handleUnLike = (id) => {
     setFavourite(prevFavourite => prevFavourite.filter(item => item.id != id))
+  }
+  
+  useEffect(() => {
+      const loadData = async () => {
+        const response = await getFavorites();
+        setFavourite(response.result);
+        setIsLoading(false);
+      }
+      loadData()
+  },[])
+
+  if(isLoading){
+    return(
+      <View style={styles.container}>
+        <View View style={styles.headerContainer}>
+            <Text style={styles.txtHeader}>Yêu thích</Text>
+        </View>
+        <View style={{
+          width: "full", 
+          height: "full", 
+          justifyContent: "center",
+          alignItems: "center",
+          flex: 1
+        }}>
+          <Image 
+            source={require('../../assets/loading.gif')} 
+            style={{height: 100, width: 100}}
+            contentFit="contain"
+          />
+        </View>
+      </View>
+
+    )
+  }
+
+  if(favourite == null){
+    return(
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+            <Text style={styles.txtHeader}>Yêu thích</Text>
+        </View>
+        <Icon5 name="heart-broken" size={50} color={"rgba(250, 74, 12, 0.7)"} style={{marginTop: "25%"}}/>
+        <Text style={{
+          fontSize: 20,
+          fontWeight: "500",
+          marginTop: "5%"
+        }}>Không có sản phẩm yêu thích</Text>
+      </View>
+    )
   }
 
 
@@ -40,13 +91,11 @@ export default function FavoritesScreen() {
             data={favourite}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({item}) => (
-              <TouchableOpacity>
-                <FavouriteCart 
+            <FavouriteCart 
                   item={item} 
                   onAddToCart={() => handleProductPress(item)}
                   onUnLike={() => handleUnLike(item.id)}
                 />
-              </TouchableOpacity>
             )}
             contentContainerStyle={{ paddingHorizontal: 10 }}
           />

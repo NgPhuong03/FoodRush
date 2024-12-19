@@ -1,17 +1,19 @@
 import { Dimensions, StyleSheet, View, Text, Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { AuthContext, AuthContextProvider } from "./contexts/AuthContext";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import AuthenticationStack from "./components/AuthenticationStack";
 import { StatusBar } from "expo-status-bar";
 import BottomTabNavigatior from "./components/BottomTabNavigator";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import BottomSheet, { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { initializeAPIUrl } from "./services/api";
 
 function ScreenStack() {
   const { isAuthenticated } = useContext(AuthContext);
   const { width, height } = Dimensions.get("window");
+
   return (
     <NavigationContainer>
       <GestureHandlerRootView style={{ flex: 1 }}>

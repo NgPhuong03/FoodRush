@@ -1,7 +1,9 @@
 import axios from "axios";
 
+
+
 // const API_URL = "http://10.0.108.214:8080/api";
-const API_URL = "http://192.168.1.4:8080/api";
+const API_URL = "http://10.0.127.93:8080/api";
 
 let user_id;
 
@@ -27,9 +29,21 @@ export const signUp = async (form) => {
   return "Loi";
 };
 
+//user 
+export const getUser = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/users/${user_id}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return "Loi lay user";
+};
+
 // Food
 
 export const fetchAllTop = async () => {
+  console.log("Load all product")
   const response = await axios.get(`${API_URL}/foods/alltop`);
   return response.data;
 };
@@ -79,12 +93,81 @@ export const firstCallMap = async () => {
   console.log("Tested ok");
 };
 
-export const getUser = async () => {
+
+export const addToCart = async (cartItem) => {
   try {
-    const response = await axios.get(`${API_URL}/users/${user_id}`);
+    // Gọi API thêm vào giỏ hàng
+    const response = await axios.post(`${API_URL}/cart/${user_id}`, cartItem);
+
+    // Kiểm tra phản hồi
+    if (response.data.code === 1000) {
+      console.log("Thêm vào giỏ hàng thành công:", response.data);
+      return response.data;
+    } else {
+      console.log("Thêm vào giỏ hàng thất bại:", response.data);
+      return response.data;
+    }
+  } catch (error) {
+    console.error("Lỗi khi thêm vào giỏ hàng:", error);
+    return {
+      code: 9999, // Mã lỗi tùy chọn
+      message: "Lỗi không xác định khi thêm vào giỏ hàng.",
+    };
+  }
+};
+
+// Favorite
+
+// export const addFavorite = async (foodId) => {
+//   try {
+//     const userId = 6; // Thay bằng ID người dùng của bạn
+//     const response = await axios.post(
+//       `/api/users/${userId}/favorites`,
+//       { foodId }, // payload nếu API yêu cầu
+//       {
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//       }
+//     );
+
+//     if (response.status === 200) {
+//       return response.data; // Thành công
+//     }
+//   } catch (error) {
+//     console.error("Lỗi khi thêm vào yêu thích:", error.response?.data || error.message);
+//     return "Lỗi khi thêm vào yêu thích";
+//   }
+// };
+
+// export const removeFavorite = async (foodId) => {
+//   try {
+//     await axios.delete(`${API_URL}/users/${user_id}/favorites/${foodId}`);
+//     return "Xóa khỏi yêu thích thành công";
+//   } catch (error) {
+//     console.log(error);
+//     return "Lỗi khi xóa khỏi yêu thích";
+//   }
+// };
+
+export const getFavorites = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/users/${user_id}/favorites`);
     return response.data;
   } catch (error) {
     console.log(error);
+    return "Lỗi khi lấy danh sách yêu thích";
   }
-  return "Loi lay user";
 };
+
+
+//order
+export const getOrderByUserId = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/users/${user_id}/orders`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return "Lỗi khi lấy danh sách đơn hàng";
+  }
+}
