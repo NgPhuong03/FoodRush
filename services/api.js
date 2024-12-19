@@ -133,37 +133,6 @@ export const addToCart = async (cartItem) => {
 
 // Favorite
 
-// export const addFavorite = async (foodId) => {
-//   try {
-//     const userId = 6; // Thay bằng ID người dùng của bạn
-//     const response = await axios.post(
-//       `/api/users/${userId}/favorites`,
-//       { foodId }, // payload nếu API yêu cầu
-//       {
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//       }
-//     );
-
-//     if (response.status === 200) {
-//       return response.data; // Thành công
-//     }
-//   } catch (error) {
-//     console.error("Lỗi khi thêm vào yêu thích:", error.response?.data || error.message);
-//     return "Lỗi khi thêm vào yêu thích";
-//   }
-// };
-
-// export const removeFavorite = async (foodId) => {
-//   try {
-//     await axios.delete(`${API_URL}/users/${user_id}/favorites/${foodId}`);
-//     return "Xóa khỏi yêu thích thành công";
-//   } catch (error) {
-//     console.log(error);
-//     return "Lỗi khi xóa khỏi yêu thích";
-//   }
-// };
 
 export const getFavorites = async () => {
   try {
