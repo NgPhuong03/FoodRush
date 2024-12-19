@@ -5,10 +5,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Cpn_Location from "../../../components/Cpn_Location";
+import Cpn_Location from "../../../components/Menu/Cpn_Location";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import IconAnt from 'react-native-vector-icons/AntDesign';
+import IconAnt from "react-native-vector-icons/AntDesign";
 import { getAddress } from "../../../services/api";
 
 export default function LocationScreen() {
@@ -17,27 +17,23 @@ export default function LocationScreen() {
   const [diachi, setDiachi] = useState([]);
   const [change, setChange] = useState(false);
 
-  useEffect(() => {
-
-  }, []);
-
   const callApi = async () => {
     const res = await getAddress();
-      setDiachi(res);
-  }
-
-  const removeItem = (itemToRemove) => {
-    setDiachi(diachi.filter(item => item.id !== itemToRemove.id));
+    setDiachi(res);
+    setFocus(true);
   };
 
-  
+  const removeItem = (itemToRemove) => {
+    setDiachi(diachi.filter((item) => item.id !== itemToRemove.id));
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       // Màn hình được focus
       callApi();
-      setFocus(true);
-      // console.log("Screen is focused");
       
+      // console.log("Screen is focused");
+
       return () => {
         // Màn hình bị unfocus
         setFocus(false);
@@ -46,26 +42,28 @@ export default function LocationScreen() {
     }, [])
   );
 
-  return (
-    <ImageBackground
-      source={require("../../../assets/background_location.png")}
-      style={styles.backgroundImg}
-    >
-      <View style={styles.container}>
-        { diachi.map(( item, index ) => (
-            <Cpn_Location key={index} item={item} reload={removeItem}/>
-          ))}
-      </View>
-      <TouchableOpacity
-        style={styles.addBtn}
-        onPress={() => {
-          navigation.navigate("AddLocation");
-        }}
+  if (isFocus) {
+    return (
+      <ImageBackground
+        source={require("../../../assets/background_location.png")}
+        style={styles.backgroundImg}
       >
-        <IconAnt name="plus" size={60} color={'#fff'}/>
-      </TouchableOpacity>
-    </ImageBackground>
-  );
+        <View style={styles.container}>
+          {diachi.map((item, index) => (
+            <Cpn_Location key={index} item={item} reload={removeItem} />
+          ))}
+        </View>
+        <TouchableOpacity
+          style={styles.addBtn}
+          onPress={() => {
+            navigation.navigate("AddLocation");
+          }}
+        >
+          <IconAnt name="plus" size={60} color={"#fff"} />
+        </TouchableOpacity>
+      </ImageBackground>
+    );
+  }
 }
 
 const styles = StyleSheet.create({

@@ -53,18 +53,20 @@ export const fetchByCategory = async (category) => {
   return respone.data;
 }
 
-// Address
+    // Address
 
+// Thêm địa chỉ
 export const addAddress = async (diachi) => {
   try {
     const res = await axios.post(`${API_URL}/address/${user_id}/add`, diachi);
     console.log(res.data);
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
   }
   return "ok";
 };
 
+// Xoá địa chỉ
 export const deleteAddress = async (id) => {
   try {
     await axios.delete(`${API_URL}/address/${id}/delete`);
@@ -74,6 +76,7 @@ export const deleteAddress = async (id) => {
   return "ok";
 };
 
+// Lấy địa chỉ
 export const getAddress = async () => {
   try {
     const response = await axios.get(`${API_URL}/users/${user_id}/address`);
@@ -83,6 +86,18 @@ export const getAddress = async () => {
   }
   return "Loi lay dia chi";
 };
+
+// Cập nhật địa chỉ
+export const updateAddress = async (id,form) => {
+  try {
+    const response = await axios.patch(`${API_URL}/address/${id}`,form);
+    console.log(response.data.result);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
 
 // Cai nay goi de load map ngay tu luc dang nhap trong android
 export const firstCallMap = async () => {
@@ -156,18 +171,24 @@ export const getFavorites = async () => {
     return response.data;
   } catch (error) {
     console.log(error);
-    return "Lỗi khi lấy danh sách yêu thích";
   }
+  return "Loi lay user";
 };
 
 
-//order
-export const getOrderByUserId = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/users/${user_id}/orders`);
-    return response.data;
-  } catch (error) {
-    console.log(error);
-    return "Lỗi khi lấy danh sách đơn hàng";
+// Phần lấy location shipper
+export const getShipperLocation = async (order_id) => {
+  const response = await axios.get(`${API_URL}/orders/${order_id}/shipper/location`);
+  if (!response){
+    console.log("Loi lay vi tri shipper");
   }
+  return response.data.result;
+}
+
+export const getUserLocation = async (order_id) => {
+  const response = await axios.get(`${API_URL}/orders/${order_id}/user/location`);
+  if (!response){
+    console.log("Loi lay vi tri user");
+  }
+  return response.data.result;
 }
