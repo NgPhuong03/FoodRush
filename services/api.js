@@ -3,7 +3,9 @@ import axios from "axios";
 
 
 // const API_URL = "http://10.0.108.214:8080/api";
+
 const API_URL = "http://10.0.127.93:8080/api";
+
 
 let user_id;
 
@@ -141,6 +143,20 @@ export const getFavorites = async () => {
   } catch (error) {
     console.log(error);
   }
+
+};
+
+
+//order
+export const getOrderByUserId = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/users/${user_id}/orders`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return "Lỗi khi lấy danh sách đơn hàng";
+  }
+
   return "Loi lay user";
 };
 
@@ -160,4 +176,5 @@ export const getUserLocation = async (order_id) => {
     console.log("Loi lay vi tri user");
   }
   return response.data.result;
+
 }
