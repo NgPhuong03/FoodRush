@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FavoritesScreen from '../pages/BottomTabs/FavouritesScreen';
-import MenuStack from '../components/MenuStack';
+import MenuStack from '../components/Menu/MenuStack'
 import { StyleSheet, Text, View } from 'react-native';
 import HomeStack from './HomeStack';
 import OrderTopTabStack from './OrderTopTabStack';

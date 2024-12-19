@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // const API_URL = "http://10.0.108.214:8080/api";
-const API_URL = "http://192.168.1.6:8080/api";
+const API_URL = "http://192.168.1.4:8080/api";
 
 let user_id;
 
@@ -39,8 +39,9 @@ export const fetchByCategory = async (category) => {
   return respone.data;
 }
 
-// Address
+    // Address
 
+// Thêm địa chỉ
 export const addAddress = async (diachi) => {
   try {
     const res = await axios.post(`${API_URL}/address/${user_id}/add`, diachi);
@@ -51,6 +52,7 @@ export const addAddress = async (diachi) => {
   return "ok";
 };
 
+// Xoá địa chỉ
 export const deleteAddress = async (id) => {
   try {
     await axios.delete(`${API_URL}/address/${id}/delete`);
@@ -60,6 +62,7 @@ export const deleteAddress = async (id) => {
   return "ok";
 };
 
+// Lấy địa chỉ
 export const getAddress = async () => {
   try {
     const response = await axios.get(`${API_URL}/users/${user_id}/address`);
@@ -69,6 +72,18 @@ export const getAddress = async () => {
   }
   return "Loi lay dia chi";
 };
+
+// Cập nhật địa chỉ
+export const updateAddress = async (id,form) => {
+  try {
+    const response = await axios.patch(`${API_URL}/address/${id}`,form);
+    console.log(response.data.result);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
 
 // Cai nay goi de load map ngay tu luc dang nhap trong android
 export const firstCallMap = async () => {

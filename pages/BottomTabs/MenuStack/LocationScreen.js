@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Cpn_Location from "../../../components/Cpn_Location";
+import Cpn_Location from "../../../components/Menu/Cpn_Location";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import IconAnt from "react-native-vector-icons/AntDesign";
