@@ -1,10 +1,7 @@
 import axios from "axios";
 
 
-
-// const API_URL = "http://10.0.108.214:8080/api";
-
-const API_URL = "http://10.0.110.254:8080/api";
+const API_URL = "http://192.168.1.4:8080/api";
 
 
 let user_id;
@@ -48,8 +45,14 @@ export const getUser = async () => {
 
 // Food
 
+export const fetchAllFood = async () => {
+  console.log("Load all food")
+  const response = await axios.get(`${API_URL}/foods/all`);
+  return response.data;
+};
+
 export const fetchAllTop = async () => {
-  console.log("Load all product")
+  console.log("Load all top type")
   const response = await axios.get(`${API_URL}/foods/alltop`);
   return response.data;
 };

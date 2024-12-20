@@ -115,12 +115,14 @@ export default function HomeScreen() {
           },
         ]}
       >
-        <View style={styles.inputContainer}>
+        <View style={styles.inputContainer} >
           <Icon name="search" size={20} color="black" style={styles.icon} />
           <TextInput
             style={styles.input}
+            onPress={() => {navigation.navigate("Search")}}
             placeholder="Bạn đang đói à?"
             placeholderTextColor="#FFA8A8"
+            readOnly
           />
         </View>
       </Animated.View>
