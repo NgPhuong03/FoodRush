@@ -4,7 +4,7 @@ import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon5 from "react-native-vector-icons/FontAwesome5"
 import { Button } from '@rneui/themed';
-import { addToCart, addFavorite, removeFavorite, getFavorites} from "../services/api";
+import { addToCart, addFavorite} from "../services/api";
 
 
 const BottomSheetComponent = ({ bottomSheetRef, snapPoints, selectedProduct }) => {
@@ -93,55 +93,16 @@ const BottomSheetComponent = ({ bottomSheetRef, snapPoints, selectedProduct }) =
     bottomSheetRef.current?.close()
   };
   
-  // const handleToggleFavorite = async () => {
-  //   const isFavorite = favorites.some(fav => fav.id === selectedProduct.id);
-
-  //   if (isFavorite) {
-  //     // Xóa khỏi yêu thích
-  //     const result = await removeFavorite(selectedProduct.id);
-  //     if (result !== "Lỗi khi xóa khỏi yêu thích") {
-  //       setFavorites(favorites.filter(fav => fav.id !== selectedProduct.id));
-  //       setInclude(prev => prev.map(item => 
-  //         item.id === selectedProduct.id ? { ...item, selected: false } : item
-  //       ));
-  //     } else {
-  //       alert(result);
-  //     }
-  //   } else {
-  //     // Thêm vào yêu thích
-  //     console.log(selectedProduct.id)
-  //     const result = await addFavorite(selectedProduct.id);
-  //     if (result !== "Lỗi khi thêm vào yêu thích") {
-  //       const newFavorite = { ...selectedProduct };
-  //       setFavorites([...favorites, newFavorite]);
-  //       setInclude(prev => prev.map(item => 
-  //         item.id === selectedProduct.id ? { ...item, selected: true } : item
-  //       ));
-  //     } else {
-  //       alert(result);
-  //     }
-  //   }
-  // };
-  
-  // useEffect(() => {
-  //   const checkFavorite = async () => {
-  //     const response = await getFavorites();
-  //     if (response.code === 1000) {
-  //       console.log(response.result);
-  //       const favIds = response.result.map(fav => fav.id);
-  //       if (favIds.includes(selectedProduct.id)) {
-  //         setInclude(prev => prev.map(item => 
-  //           item.id === selectedProduct.id ? { ...item, selected: true } : item
-  //         ));
-  //       }
-  //     } else {
-  //       alert("Error fetching favorites");
-  //     }
-  //   };
-    
-  //   checkFavorite();
-  // }, [selectedProduct]);
-  
+  const handleAddFavorite = async (id) =>{
+        try {
+          // Gọi API xóa sản phẩm
+          await addFavorite(id);
+      
+          console.log(`Đã like sản phẩm có ID: ${id}`);
+        } catch (error) {
+          console.error(`Lỗi khi like sản phẩm có ID: ${id}`, error);
+        }
+  }
 
   return (
     <BottomSheet
@@ -208,7 +169,7 @@ const BottomSheetComponent = ({ bottomSheetRef, snapPoints, selectedProduct }) =
 
                     {/* Thả tim nè hihi  */}
                     <View style={{width: "15%", justifyContent: "center", alignItems: "center"}}>
-                      <TouchableOpacity style={styles.bgIcon}>
+                      <TouchableOpacity style={styles.bgIcon} onPress={() => handleAddFavorite(selectedProduct.id)}>
                         <Icon name="heart-o" size={24} color="#ACABAB" />
                       </TouchableOpacity>
                   </View> 

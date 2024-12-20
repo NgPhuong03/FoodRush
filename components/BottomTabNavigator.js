@@ -7,10 +7,24 @@ import OrderTopTabStack from './OrderTopTabStack';
 import CartStack from './CartStack';
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon6 from "react-native-vector-icons/FontAwesome6";
+import { useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import React, { useCallback } from "react";
 
 const Tab = createBottomTabNavigator();
 
 export default function BottomTabNavigatior() {
+  const navigation = useNavigation();
+
+  useFocusEffect(
+    useCallback(() => {
+      // Reset HomeStack when focusing on Home tab
+      navigation.navigate("Home", {
+        screen: "Main",
+      });
+    }, [navigation])
+  );
+
   return (
     <Tab.Navigator screenOptions={{
         headerShown: false,
@@ -29,6 +43,7 @@ export default function BottomTabNavigatior() {
               <Icon name="home" size={size} color={color} />
           ),
         }}
+        unmountOnBlur={true} 
       />
       <Tab.Screen name="Favorites" component={FavoritesScreen} 
           options={{
@@ -36,6 +51,7 @@ export default function BottomTabNavigatior() {
               <Icon name="heart" size={size} color={color} />
           ),
         }}
+        unmountOnBlur={true} 
       />
       <Tab.Screen name="Cart" component={CartStack}   
         options={{
@@ -47,6 +63,7 @@ export default function BottomTabNavigatior() {
             </View>
             ),
           }}
+          unmountOnBlur={true} 
       />
       <Tab.Screen name="Order" component={OrderTopTabStack} 
           options={{
@@ -61,6 +78,7 @@ export default function BottomTabNavigatior() {
                 <Icon name="navicon" size={size} color={color} />
             ),
           }}
+          unmountOnBlur={true} 
       />
     </Tab.Navigator>
   );
