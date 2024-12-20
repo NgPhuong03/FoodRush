@@ -7,7 +7,7 @@ import Icon from "react-native-vector-icons/FontAwesome6";
 
 
 
-export default function AddressCard({isPay}){
+export default function AddressCard({isPay, userInOrderHistory, setAddressId }){
     const [user, setUser] = useState()
     const [address, setAddress] = useState()
     const [isLoading, setIsLoading] = useState(true);
@@ -16,8 +16,6 @@ export default function AddressCard({isPay}){
         const Loaddata = async () => {
             const resAddress = await getAddress();
             const resUser = await getUser();
-            console.log(resAddress)
-            console.log(resUser.result);
             setAddress(resAddress);
             setUser(resUser.result);
             setIsLoading(false);
@@ -28,6 +26,12 @@ export default function AddressCard({isPay}){
     if(isLoading){
         return null
     }
+
+    // useEffect(() => {
+    //     if (isPay) {
+    //       setAddressId(address[0].id);
+    //     }
+    //   }, [setAddressId]);
 
     if(isPay == true){
         return (
@@ -78,10 +82,10 @@ export default function AddressCard({isPay}){
                 <View style={{width: "80%"}}>
                     <Text style={styles.titleAddress}>Địa chỉ nhận hàng</Text>
                     <Text style={styles.address}>
-                        {user.name} | {user.phone_number}
+                        {userInOrderHistory.name} | {userInOrderHistory.phoneNumber}
                     </Text>
-                    <Text style={styles.address} numberOfLines={2}>
-                        {address[0].address}
+                    <Text style={styles.address} numberOfLines={3}>
+                        {userInOrderHistory.address}
                     </Text>
                 </View>    
             </View>
@@ -93,7 +97,7 @@ export default function AddressCard({isPay}){
 const styles = StyleSheet.create({
     container: {
         width: "100%",
-        height: 100,
+        height: "auto",
         flexDirection: "row",
         backgroundColor: "#fff",
         borderRadius: 10,

@@ -2,12 +2,42 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, Keyboard, ScrollVi
 import { useNavigation } from '@react-navigation/native';
 import AddressCard from '../../../components/Cart/AddressCard';
 import PayMethodCard from '../../../components/Cart/PayMethodCard';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getUserId, createOrder } from '../../../services/api';
 
 export default function PayScreen({route}) {
-  const {totalAmount} = route.params;
+  const {cart, TongTien} = route.params;
   const navigation = useNavigation();
-  const [note, setNote] = useState('')
+  const [note, setNote] = useState('');  // Ghi chú
+  const [addressId, setAddressId] = useState(null);  // ID địa chỉ
+  const [paymentMethod, setPaymentMethod] = useState(null);  // Phương thức thanh toán
+
+  const handleOrder = async () => {
+    const formattedOrder = {
+      user_id: getUserId(),
+      address_id: 18,
+      note: note,
+      paymethod: paymentMethod,
+      cost: TongTien + 50000, // Phí vận chuyển đã bao gồm
+      list: cart.map(item => ({
+        food_id: item.food.id,
+        food_quantity: item.food_quantity,
+        addon: item.addonList.map(addon => ({
+          addon_id: addon.name === "pepsi" ? 1 : 2,
+          addon_quantity: addon.quantity
+        }))
+      }))
+    };
+
+    const response = await createOrder(formattedOrder);
+
+    if (response.code === 1000) {
+      alert("Đặt hàng thành công!");
+    } else {
+      alert("Đặt hàng thất bại: " + response.message);
+    }
+
+  }
 
   return (
     <View style={styles.container}>
@@ -18,8 +48,8 @@ export default function PayScreen({route}) {
         paddingHorizontal: 10,
         gap: 5
       }}>
-        <AddressCard isPay={true}/>
-        <PayMethodCard/>
+        <AddressCard isPay={true} setAddressId={setAddressId} />
+        <PayMethodCard setPaymentMethod={setPaymentMethod}/>
 
         {/* Ghi chú  */}
         <View style={styles.noteContainer}>
@@ -44,7 +74,7 @@ export default function PayScreen({route}) {
           <View style={{flexDirection: "row", paddingHorizontal: 20, paddingVertical: 10}}>
             <Text style={{width: "50%", fontSize: 16, textAlign: "left"}}>Tổng cộng</Text>
             <Text style={{width: "50%", fontSize: 16, textAlign: "right"}}>
-              {(totalAmount).toLocaleString('vi-VN')}đ
+              {(TongTien).toLocaleString('vi-VN')}đ
             </Text>
           </View>
 
@@ -64,11 +94,12 @@ export default function PayScreen({route}) {
         <View style={styles.totalContainer}>
           <Text style={styles.totalLabel}>Tổng cộng:</Text>
           <Text style={styles.totalAmount}>
-            {(totalAmount + 50000).toLocaleString('vi-VN')}đ
+            {(TongTien + 50000).toLocaleString('vi-VN')}đ
           </Text>
         </View>
         <TouchableOpacity
           style={styles.paymentButton}
+          onPress={() => handleOrder()}
         >
           <Text style={styles.paymentText}>Đặt hàng</Text>
         </TouchableOpacity>

@@ -1,8 +1,8 @@
-import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text, TouchableOpacity, View, FlatList} from 'react-native';
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { StyleSheet, Text, TouchableOpacity, View, FlatList, ScrollView, RefreshControl} from 'react-native';
 import Icon5 from "react-native-vector-icons/MaterialCommunityIcons"
 import OrderCart from '../../../components/Order/OrderCard';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getOrderByUserId } from '../../../services/api';
 import { Image } from 'expo-image';
 
@@ -10,18 +10,51 @@ export default function OrderScreen() {
   const navigation = useNavigation();
   const [order, setOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    const loadData = async () => {
-      const response = await getOrderByUserId();
-      if (response) {
-        // Lọc các đơn hàng có status = "dagiao"
-        const filteredOrders = response.filter((item) => item.status === 'dangnau');
-        console.log(filteredOrders)
-        setOrder(filteredOrders);
-      } else {setOrder(null)}
-      setIsLoading(false)
+
+  useFocusEffect(
+    useCallback(() => {
+      const resetData = async () => {
+        const response = await getOrderByUserId();
+        if (response) {
+            // Lọc đơn hàng theo trạng thái 'dangnau'
+            const filteredOrders = response.filter((item) => item.status === 'dangnau');
+            
+            // Sắp xếp theo 'create_at' giảm dần
+            const sortedOrders = filteredOrders.sort((a, b) => new Date(b.create_at) - new Date(a.create_at));
+            
+            setOrder(sortedOrders.length > 0 ? sortedOrders : null);
+        } else {
+          setOrder(null);
+        }
+
+      };
+      resetData();
+      setIsLoading(false);
+
+    }, [])
+  );
+
+  const loadData = async () => {
+    setRefreshing(true);
+    const response = await getOrderByUserId();
+    if (response) {
+          // Lọc đơn hàng theo trạng thái 'dangnau'
+          const filteredOrders = response.filter((item) => item.status === 'dangnau');
+          
+          // Sắp xếp theo 'create_at' giảm dần
+          const sortedOrders = filteredOrders.sort((a, b) => new Date(b.create_at) - new Date(a.create_at));
+          
+          setOrder(sortedOrders.length > 0 ? sortedOrders : null);
+    } else {
+      setOrder(null);
     }
+    setRefreshing(false);
+    setIsLoading(false)
+  };
+  
+  useEffect(() => {
     loadData()
   },[])
 
@@ -46,17 +79,20 @@ export default function OrderScreen() {
       )
     }
   
-    if(order){
+    if(!order){
       return(
-        <View style={styles.container}>
-          <Icon5 name="chef-hat" size={50} color={"rgba(250, 74, 12, 0.7)"} style={{marginTop: "25%"}}/>
-          <Text style={{
-            fontSize: 20,
-            fontWeight: "500",
-            marginTop: "5%"
-          }}>Không có đơn hàng đang nấu</Text>
-        </View>
-      )
+        <ScrollView
+        contentContainerStyle={styles.container}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={loadData} />
+        }
+      >
+        <Icon5 name="chef-hat" size={50} color={"rgba(250, 74, 12, 0.7)"} />
+        <Text style={{ fontSize: 20, fontWeight: "500", marginTop: "5%" }}>
+          Không có đơn hàng đang nấu
+        </Text>
+      </ScrollView>
+      );
     }
 
   return (
@@ -74,6 +110,8 @@ export default function OrderScreen() {
               </TouchableOpacity>
             )}
             contentContainerStyle={{ paddingHorizontal: 10 }}
+            refreshing={refreshing}
+            onRefresh={loadData} // Gọi hàm loadData khi người dùng kéo để làm mới
           />
       </View>
 
@@ -91,7 +129,6 @@ const styles = StyleSheet.create({
   listOrder: {
     width: "100%",
     height: "95%",
-    borderWidth: 1,
   }
 
 });

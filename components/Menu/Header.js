@@ -7,7 +7,7 @@ import {getUser} from "../../services/api.js"
 
 export default function Header() {
   const { LogOut } = useContext(AuthContext);
-  const [userInfo, setUserInfo] = useState({});
+  const [userInfo, setUserInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
@@ -34,11 +34,10 @@ export default function Header() {
             contentFit="contain"
           />          
         </View>)
-          : 
-        (
+          :         (
           <View style={styles.infor}>
-            <Text style={{fontWeight: 'bold', fontSize: 20, marginBottom: 8, color: '#fff'}}>{userInfo.name}</Text>
-            <Text style={{ fontSize: 16, color: '#ddd'}} >{userInfo.email}</Text>
+            <Text style={{fontWeight: 'bold', fontSize: 20, marginBottom: 8, color: '#fff'}}>{userInfo?.name}</Text>
+            <Text style={{ fontSize: 16, color: '#ddd'}} >{userInfo?.email}</Text>
           </View>
         )}
         <TouchableOpacity

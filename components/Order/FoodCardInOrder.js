@@ -18,7 +18,7 @@ export default function FoodCardInOrder({item}){
                 {/* Hình ảnh sản phẩm  */}
                 <View style={{alignSelf: "stretch", width: "30%" }}>
                     <Image
-                        source={{ uri: item.image }} // Hiển thị ảnh từ URL
+                        source={{ uri: item.food.image }} // Hiển thị ảnh từ URL
                         style={styles.productImage}
                     />
                 </View>
@@ -30,74 +30,49 @@ export default function FoodCardInOrder({item}){
                     paddingStart: 10,
                 }}
                 >
-                    <Text style={styles.txtName} numberOfLines={2} ellipsizeMode="tail">{item.name}</Text>
+                    <Text style={styles.txtName} numberOfLines={1} ellipsizeMode="tail">{item.food.name}</Text>
                 
                     <View style={styles.ReviewContainer} >
-                        <Text style={styles.txtStar}>{item.star}</Text>
+                        <Text style={styles.txtStar}>{item.food.star}</Text>
                         <Icon name="star" color="#FA4A0C" size={16} style={styles.iconStar}/>
-                        <Text style={styles.txtCount}>({item.count_rv})</Text>
+                        <Text style={styles.txtCount}>({item.food.count_rv})</Text>
                     </View>
 
                     <View style={styles.CostContainer} >
-                    {item.discount > 0 ? (
+                    {item.food.sale > 0 ? (
                             <>
                             <Text style={styles.txtCost}>
-                                {item.cost.toLocaleString("vi-VN")}đ
+                                {item.food.cost.toLocaleString("vi-VN")}đ
                             </Text>
                             <Text style={styles.txtCostDaGiam}>
-                                {(item.cost - (item.cost * item.discount) / 100).toLocaleString("vi-VN")}đ
+                                {(item.food.cost - (item.food.cost * item.food.sale) / 100).toLocaleString("vi-VN")}đ
                             </Text>                           
                             </>
                         ) : (
                             <Text style={styles.txtCostDaGiam}>
-                            {item.cost.toLocaleString("vi-VN")}đ
+                            {item.food.cost.toLocaleString("vi-VN")}đ
                             </Text>
                         )}
                     </View>
-
                     {/* Kèm theo  */}
-                    {item.addons.pepsi.quantity > 0 || item.addons.sting.quantity > 0 
-                        ? (
-                        <View style={{flexDirection: "row", alignItems: "baseline", height: "auto", width: "auto"}}>
-                            <Text style={{fontSize: 18, fontWeight:"600"}}>Kèm theo:{" "}
-                            {/* Kiểm tra có pepsi không  */}
-                            {item.addons.pepsi.quantity > 0 
-                                ?  ( 
-                                <Text style={{fontSize: 16, fontWeight: "450"}}>
-                                    Pepsi
-                                    ({item.addons.pepsi.quantity})
-                                </Text> 
-                                )
-                                : null
-                            }
-                            {/* Kiểm tra có sting không  */}
-                            {item.addons.sting.quantity > 0
-                                ?  ( 
-                                <Text style={{fontSize: 16, fontWeight: "450"}}>
-                                    {/* Nếu có sting thì kiểm tra tiếp trước nó pepsi không để có thể thêm dấu phẩy đúng format  */}
-                                    {item.addons.pepsi.quantity > 0
-                                        ?  ( 
-                                        <Text style={{fontSize: 16, fontWeight: "450"}}>
-                                            , Sting ({item.addons.sting.quantity})
-                                        </Text> 
-                                        )
-                                        : ( 
-                                        <Text style={{fontSize: 16, fontWeight: "450"}}>
-                                            Sting ({item.addons.sting.quantity})
-                                        </Text> 
-                                        )
-                                    }
-    
-                                </Text> 
-                                )
-                                : null
-                            }   
+                    {item.addon_list && item.addon_list.some(addon => addon.quantity > 0) ? (
+                        <View style={{ flexDirection: "row", alignItems: "baseline", height: "auto", width: "auto" }}>
+                            <Text style={{ fontSize: 18, fontWeight: "600" }}>
+                                Kèm theo:{" "}
+                                {item.addon_list.map((addon, index) => 
+                                    addon.quantity > 0 ? (
+                                        <Text key={index} style={{ fontSize: 16, fontWeight: "450" }}>
+                                            {index > 0 && item.addon_list[index - 1].quantity > 0 ? ", " : ""}
+                                            {addon?.name.charAt(0).toUpperCase() + addon?.name.slice(1)} ({addon.quantity})
+                                        </Text>
+                                    ) : null
+                                )}
                             </Text>
                         </View>
-                        )
-                        : null
-                    }
+                    ) : null}
+
                 </View>
+
 
                 <Text style={{
                     marginLeft: -50,
@@ -105,7 +80,7 @@ export default function FoodCardInOrder({item}){
                     paddingTop: 30,
                     fontSize: 15,
                     fontWeight: "500"
-                }}>Số lượng: {item.quantity}</Text>
+                }}>Số lượng: {item.food_quantity}</Text>
             </View>
 
 
@@ -122,6 +97,14 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         borderWidth: 0.5 ,
         borderColor: "#ACABAB",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 2.27,
+        elevation: 10, // Dành cho Android
     },
     ChildContainer: {
         alignItems: "center",
@@ -130,14 +113,14 @@ const styles = StyleSheet.create({
         height: "auto",
     },
     productImage: {
-        width: "100%",
-        height: 100,
+        width: "90%",
+        height: 80,
         resizeMode: "cover", // Cắt ảnh nếu cần
         borderRadius: 10
     },
     txtName: {
         width: "98%",
-        height: 45,
+        height: 25,
         fontSize: 16,
         fontWeight: "600",
         color: "#000",
@@ -211,3 +194,4 @@ const styles = StyleSheet.create({
         fontWeight: "500"
     }
 })
+

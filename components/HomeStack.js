@@ -4,10 +4,15 @@ import HomeScreen from "../pages/BottomTabs/HomeScreen";
 import NotificationScreen from "../pages/BottomTabs/HomeStack/NotificationScreen";
 import ProductDetailsScreen from '../pages/BottomTabs/HomeStack/ProductDetailsScreen';
 import CategoryScreen from '../pages/BottomTabs/HomeStack/CategoryScreen';
+import { useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import React, { useCallback } from "react";
 
 const Stack = createStackNavigator();
 
 export default function HomeStack() {
+
+
   return (
     <Stack.Navigator>
       <Stack.Screen name="Main" component={HomeScreen} options={{headerShown: false}}/>

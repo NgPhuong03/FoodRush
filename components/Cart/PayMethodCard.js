@@ -6,13 +6,14 @@ import * as Clipboard from "expo-clipboard";
 
 
 
-export default function PayMethodCard(){
+export default function PayMethodCard({setPaymentMethod }){
     const [selectedMethod, setSelectedMethod] = useState(null);
 
     const copyToClipboard = (text) => {
         Clipboard.setStringAsync(text);
         Alert.alert("Thông báo", "Đã sao chép số tài khoản!");
       };
+
 
     const styles = StyleSheet.create({
         container: {
@@ -102,7 +103,10 @@ export default function PayMethodCard(){
           {/* Option: Thanh toán khi nhận hàng */}
           <TouchableOpacity
             style={[styles.option, selectedMethod === 'cash' && styles.selectedOption]}
-            onPress={() => setSelectedMethod('cash')}
+            onPress={() => {
+              setSelectedMethod('cash')
+              setPaymentMethod(false)
+            }}
           >
             {selectedMethod === 'cash' 
                 ?  <Icon name="check-circle-o" size={20} color={"#FA4A0C"}/>
@@ -116,7 +120,10 @@ export default function PayMethodCard(){
           {/* Option: Chuyển khoản */}
           <TouchableOpacity
             style={[styles.option, selectedMethod === 'transfer' && styles.selectedOption]}
-            onPress={() => setSelectedMethod('transfer')}
+            onPress={() => {
+              setSelectedMethod('transfer')
+              setPaymentMethod(true)
+            }}
           >
             {selectedMethod === 'transfer' 
                 ?  <Icon name="check-circle-o" size={20} color={"#FA4A0C"}/>

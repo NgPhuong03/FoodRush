@@ -11,8 +11,21 @@ const Stack = createStackNavigator();
 
 const TopTab = () => {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Đang nấu" component={OrderScreen} />
+    <Tab.Navigator
+      tabBarOptions={{
+        activeTintColor: '#fa4a0c', // Màu chữ khi tab được trỏ đến
+        indicatorStyle: { // Thanh bên dưới
+          backgroundColor: '#fa4a0c', // Màu của thanh bên dưới
+        },
+        labelStyle: {
+          fontWeight: 'bold', // Màu chữ kiểu chữ in đậm
+        },
+        style: {
+          backgroundColor: 'white', // Màu nền của tab
+        },
+      }}
+    >
+      <Tab.Screen name="Đang nấu" component={OrderScreen}/>
       <Tab.Screen name="Đang giao" component={DeliveringScreen} />
       <Tab.Screen name="Lịch sử" component={HistoryScreen} />
     </Tab.Navigator>

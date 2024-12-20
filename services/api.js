@@ -4,10 +4,14 @@ import axios from "axios";
 
 // const API_URL = "http://10.0.108.214:8080/api";
 
-const API_URL = "http://10.0.127.93:8080/api";
+const API_URL = "http://10.0.110.254:8080/api";
 
 
 let user_id;
+
+export const getUserId = () => {
+  return user_id;
+}
 
 // Authentication
 
@@ -157,7 +161,6 @@ export const getOrderByUserId = async () => {
     return "Lỗi khi lấy danh sách đơn hàng";
   }
 
-  return "Loi lay user";
 };
 
 
@@ -178,3 +181,90 @@ export const getUserLocation = async (order_id) => {
   return response.data.result;
 
 }
+
+//getOrderDetailById
+export const getOrderDetailById = async (order_id) => {
+  const response = await axios.get(`${API_URL}/orders/${order_id}`);
+  if (!response){
+    console.log("Loi lay chi tiet don hang");
+  }
+  return response.data.result;
+}
+
+//getCartByUserId
+export const getCartByUserId = async () => {
+  const response = await axios.get(`${API_URL}/cart/${user_id}`);
+  if (!response){
+    console.log("Loi lay gio hang");
+  }
+  return response.data.result;
+}
+
+//xóa cart
+export const deleteCart = async (id) => {
+  try {
+    await axios.delete(`${API_URL}/cart/delete/${id}`);
+  } catch (error) {
+    console.log(error);
+  }
+  return "ok";
+};
+
+//xóa fav
+export const deleteFavorite = async (id) => {
+  try {
+    await axios.delete(`${API_URL}/users/6/favorites/${id}`);
+  } catch (error) {
+    console.log(error);
+  }
+  return "ok";
+};
+
+//xóa fav
+export const addFavorite = async (id) => {
+  try {
+    await axios.post(`${API_URL}/users/6/favorites/${id}`);
+  } catch (error) {
+    console.log(error);
+  }
+  return "ok";
+};
+
+//Thay đổi thông tin user
+// Cập nhật thông tin người dùng
+export const updateUser = async (userData) => {
+  try {
+    const response = await axios.put(`${API_URL}/users/${user_id}`, userData);
+    console.log("Cập nhật thông tin người dùng thành công:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi cập nhật thông tin người dùng:", error);
+    return {
+      code: 9999, // Mã lỗi tùy chọn
+      message: "Lỗi không xác định khi cập nhật thông tin người dùng.",
+    };
+  }
+};
+
+export const createOrder = async (item) => {
+  try {
+    // Gọi API thêm vào giỏ hàng
+    const response = await axios.post(`${API_URL}/orders`, item);
+
+    // Kiểm tra phản hồi
+    if (response.data.code === 1000) {
+      console.log("Tạo đơn hàng thành công:", response.data);
+      return response.data;
+    } else {
+      console.log("Tạo đơn hàng thất bại:", response.data);
+      return response.data;
+    }
+  } catch (error) {
+    console.error("Lỗi khi tạo đơn hàng:", error);
+    return {
+      code: 9999, // Mã lỗi tùy chọn
+      message: "Lỗi không xác định khi tạo đơn hàng.",
+    };
+  }
+};
+

@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { 
   StyleSheet,
   Text, 
@@ -9,7 +9,7 @@ import {
   Animated,
   ScrollView
 } from "react-native";
-import React, { useRef, useMemo, useState, useEffect } from "react";
+import React, { useRef, useMemo, useState, useEffect, useCallback } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ProductCart from "../../components/Home/ProductCard";
 import Banner from "../../components/Home/Banner";
@@ -31,20 +31,38 @@ export default function HomeScreen() {
 
   const [scrollProgress, setScrollProgress] = useState(0); // Lưu trạng thái tiến trình cuộn
 
-  useEffect(() => {
+  useFocusEffect(
+    useCallback(() => {
+      const resetData = async () => {
+        setLoading(true);
+        const res = await fetchAllTop();
+        if (res) {
+          setData(res);
+          setLoading(false);
+        }
+      };
+      resetData();
+
+      // Reset các trạng thái khác nếu cần
+      setSelectedProduct(null);
+      bottomSheetRef.current?.close();
+    }, [])
+  );
+
+  // useEffect(() => {
     
-    const get = async () => {
+  //   const get = async () => {
       
-      const res = await fetchAllTop();
+  //     const res = await fetchAllTop();
       
-      if (res){
-        setData(res);
-        setLoading(false)
-      }
-      // console.log(res)
-    }
-    get();
-  }, [])
+  //     if (res){
+  //       setData(res);
+  //       setLoading(false)
+  //     }
+  //     // console.log(res)
+  //   }
+  //   get();
+  // }, [])
   
   const handleProductPress = (product) => {
     bottomSheetRef.current?.expand();
@@ -137,7 +155,7 @@ export default function HomeScreen() {
         <View style={styles.trendContainer}>
           <View style={{ flexDirection: "row", paddingHorizontal: 10, paddingVertical: 10 }}>
             <Text style={styles.txtTrend}>Thịnh hành hôm nay</Text>
-            <TouchableOpacity style={styles.btnMore}>
+            <TouchableOpacity style={styles.btnMore} >
               <Text style={styles.txtMore}>Xem thêm</Text>
             </TouchableOpacity>
           </View>
