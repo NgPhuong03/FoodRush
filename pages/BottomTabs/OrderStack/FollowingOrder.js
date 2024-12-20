@@ -5,23 +5,38 @@ import { OrderFollowingData } from '../../../data/Order/OrderFollowing';
 import FoodCardInOrder from '../../../components/Order/FoodCardInOrder';
 import AddressCard from '../../../components/Cart/AddressCard';
 import FollowingShipper from '../../../components/LocationMap/FollowingShipper';
+import {getOrderDetailById}  from '../../../services/api';
 
 export default function FollowingOrder({route}) {
-  const {order_id, created_at, paymethod, dungcu} = route.params;
-  const [order, setOrder] = useState([]);
-
+  const {order_id} = route.params;
+  const [orderDetail, setOrderDetail] = useState(null);
+  const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
-    const filteredOrders = OrderFollowingData.filter((item) => item.order_id === order_id);
-    setOrder(filteredOrders);
+      const loadData = async () => {
+        const response = await getOrderDetailById(order_id);
+        console.log(response)
+        setOrderDetail(response)
+        setIsLoading(false)
+      }
+      loadData()
   }, []); // Chạy một lần sau khi component được mount
 
-  const formatDate = (dateString) => {
-    const [datePart, timePart] = dateString.split(' ');
-    const [day, month, year] = datePart.split('-');
-    const [hours, minutes] = timePart.split(':');
+  // useEffect(() => {
+  //   const filteredOrders = OrderFollowingData.filter((item) => item.order_id === order_id);
+  //   setOrder(filteredOrders);
+  // }, []); // Chạy một lần sau khi component được mount
 
-    return `${parseInt(day)} thg${parseInt(month)} ${year} ${hours}:${minutes}`;
-  };
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+  
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+  }
 
   const calculateTotalAmount = (cart) => {
     return cart.reduce((total, item) => {
@@ -45,6 +60,27 @@ export default function FollowingOrder({route}) {
     }, 0); // Bắt đầu từ 0
   };
 
+  if(isLoading){
+    return(
+      <View style={styles.container}>
+        <View style={{
+          width: "full", 
+          height: "full", 
+          justifyContent: "center",
+          alignItems: "center",
+          flex: 1
+        }}>
+          <Image 
+            source={require('../../../assets/loading.gif')} 
+            style={{height: 100, width: 100}}
+            contentFit="contain"
+          />
+        </View>
+      </View>
+
+    )
+  }
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.mapContainer}>
@@ -66,7 +102,7 @@ export default function FollowingOrder({route}) {
             <Text style={styles.txtLeft}>Mã đơn hàng: #{order_id}</Text>
             <Text style={styles.txtRight}>
               <Icon name='clock' size={18} color={"black"}/>
-              &nbsp;{formatDate(created_at)}      
+              &nbsp;{orderDetail?.create_at ? formatDate(orderDetail.create_at) : "N/A"}      
             </Text>
           </View>
 
@@ -78,46 +114,47 @@ export default function FollowingOrder({route}) {
             <Text style={styles.txtLeft}>Phương thức thanh toán</Text>
             <View style={[styles.statusContainer, {alignSelf: "flex-start",backgroundColor: "rgba(250, 74, 12, 0.2)"}]}>
                   <Text style={[styles.txtStatus, { color: "#FA4A0C"}]}>
-                    {paymethod ? "Chuyển khoản" : "COD"}
+                    {orderDetail?.paymethod ? "Chuyển khoản" : "COD"}
                   </Text>
             </View>
           </View>
 
           <View style={{flexDirection: "row", paddingVertical: 5}}>
-            <Text style={styles.txtLeft}>Số lượng món ăn: {order.length} </Text>
+            <Text style={styles.txtLeft}>Số lượng món ăn: {orderDetail.list.length} </Text>
             <Text style={styles.txtRight}>
               Đang giao  
             </Text>
           </View>
 
-          
-          <View style={{flexDirection: "row", paddingVertical: 5}}>
-            <Text style={styles.txtLeft}>Dụng cụ ăn uống</Text>
-            <Text style={styles.txtRight}>
-              {dungcu ? "Có" : "Không"}  
-            </Text>
-          </View>       
+             
       </View>
 
       <View style={styles.listFood}>
             <Text style={{fontSize: 18, fontWeight: "600"}}>Thông tin món ăn</Text>
-            {order.map((item, index) => (
+            {orderDetail.list.map((item, index) => (
                 <FoodCardInOrder key={index} item={item} />
             ))}
       </View>
 
-      <View style={{paddingHorizontal: 10}}>
-        <AddressCard isPay={false}/>
+      <View style={[styles.noteContainer, {marginBottom: 10}]}>
+        <Text style={styles.title}>Ghi chú:</Text>
+        <Text style={styles.txtNote}>{orderDetail.note}</Text>
       </View>
 
-      <View style={styles.noteContainer}>
-          <Text style={{fontSize: 18, fontWeight: "600"}}>Chi tiết đơn hàng:</Text>
+      <View style={{paddingHorizontal: 10}}>
+        <AddressCard isPay={false} userInOrderHistory={orderDetail.address}/>
+      </View>
+
+
+      <View style={[styles.noteContainer, {marginBottom: 30}]}>
+          <Text style={styles.title}>Chi tiết đơn hàng:</Text>
           <View style={{width: "100%", height: 1, backgroundColor: "black", paddingHorizontal: 20}}></View>
 
           <View style={{flexDirection: "row", paddingVertical: 10}}>
             <Text style={{width: "50%", fontSize: 16, textAlign: "left"}}>Tổng cộng</Text>
             <Text style={{width: "50%", fontSize: 16, textAlign: "right"}}>
-              {calculateTotalAmount(order).toLocaleString('vi-VN')}đ
+              {/* {calculateTotalAmount(order).toLocaleString('vi-VN')}đ */}
+              {orderDetail.cost.toLocaleString('vi-VN')}đ
             </Text>
           </View>
 
@@ -210,6 +247,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginHorizontal: 10,
     marginBottom: 30
+  },
+  title: {
+    fontSize: 18, 
+    fontWeight: "600"
+  },
+  txtNote: {
+    paddingBottom: 10,
+    paddingTop: 5
   }
 
 });

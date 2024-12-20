@@ -59,7 +59,7 @@ export default function ProductCart({item, onSelect}){
                         source={{ uri: item.image }} // Hiển thị ảnh từ URL
                         style={styles.productImage}
                     />
-                    <Text style={styles.txtName} numberOfLines={2} ellipsizeMode="tail">{item.name}</Text>
+                    <Text style={styles.txtName} numberOfLines={1} ellipsizeMode="tail">{item.name}</Text>
                 
                     <View style={styles.ReviewContainer} >
                         <Text style={styles.txtStar}>{item.star}</Text>
@@ -105,8 +105,8 @@ const styles = StyleSheet.create({
     },
     CartContainer: {
         backgroundColor: "white",
-        height: 230,
-        width: 190,
+        height: 200,
+        width: 180,
         borderRadius: 10
     },
     ChildContainer: {
@@ -123,7 +123,6 @@ const styles = StyleSheet.create({
     },
     txtName: {
         width: "98%",
-        height: 50,
         fontSize: 16,
         fontWeight: "600",
         color: "#000",

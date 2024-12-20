@@ -5,29 +5,33 @@ import Icon from "react-native-vector-icons/FontAwesome6";
 export default function OrderCart({item, onFollow, onFeedBack}) {
 
     const formatDate = (dateString) => {
-        const [datePart, timePart] = dateString.split(' ');
-        const [day, month, year] = datePart.split('-');
-        const [hours, minutes] = timePart.split(':');
-    
-        return `${parseInt(day)} thg${parseInt(month)} ${year} ${hours}:${minutes}`;
-    };
+        const date = new Date(dateString);
+        
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0
+        const year = date.getFullYear();
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+      
+        return `${day}/${month}/${year} ${hours}:${minutes}`;
+      }
     
     const formatStatus = (status) => {
         switch (status) {
-            case "ChoXacNhan":
+            case "choxacnhan":
                 return "Chờ Xác nhận";
-            case "DangNau":
+            case "dangnau":
                 return "Đang nấu";  
-            case "DangGiao":
+            case "danggiao":
                 return "Đang giao";        
-            case "DaGiao":
+            case "dagiao":
                 return "Đã giao";      
             default: 
                 return "null";
         }
     }
     
-    if(item.status === 'DangNau'){
+    if(item.status === 'dangnau'){
         return (
             <View style={styles.container}>
                 <Image  source={require('../../assets/logo.png')} style={styles.img}/>
@@ -37,7 +41,7 @@ export default function OrderCart({item, onFollow, onFeedBack}) {
                         Mã đơn hàng: #{item.order_id}
                     </Text>
                     <Text style={styles.txtDate}>
-                        {formatDate(item.created_at)}
+                        {formatDate(item.create_at)}
                     </Text>
                     <Text style={styles.txtCost}>{(item.cost).toLocaleString('vi-VN')}đ</Text>
                 </View>
@@ -53,7 +57,7 @@ export default function OrderCart({item, onFollow, onFeedBack}) {
     }
 
 
-    if(item.status === 'DangGiao'){
+    if(item.status === 'danggiao'){
         return (
             <View style={styles.container}>
                 <Image  source={require('../../assets/logo.png')} style={styles.img}/>
@@ -63,7 +67,7 @@ export default function OrderCart({item, onFollow, onFeedBack}) {
                         Mã đơn hàng: #{item.order_id}
                     </Text>
                     <Text style={styles.txtDate}>
-                        {formatDate(item.created_at)}
+                        {formatDate(item.create_at)}
                     </Text>
                     <Text style={styles.txtCost}>{(item.cost).toLocaleString('vi-VN')}đ</Text>
                 </View>
@@ -102,7 +106,7 @@ export default function OrderCart({item, onFollow, onFeedBack}) {
         )
     }
 
-    if(item.status === 'DaGiao'){
+    if(item.status === 'dagiao'){
         return (
             <View style={styles.container}>
                 <Image  source={require('../../assets/logo.png')} style={styles.img}/>
@@ -112,7 +116,7 @@ export default function OrderCart({item, onFollow, onFeedBack}) {
                         Mã đơn hàng: #{item.order_id}
                     </Text>
                     <Text style={styles.txtDate}>
-                        {formatDate(item.created_at)}
+                        {formatDate(item.create_at)}
                     </Text>
                     <Text style={styles.txtCost}>{(item.cost).toLocaleString('vi-VN')}đ</Text>
                 </View>
@@ -161,7 +165,15 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         paddingHorizontal: 10,
         marginTop: 10,
-        borderRadius: 10
+        borderRadius: 10,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 5.27,
+        elevation: 10, // Dành cho Android
     },
     img: {
         height: 80,

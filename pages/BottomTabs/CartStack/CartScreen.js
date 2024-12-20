@@ -1,20 +1,61 @@
-import { useNavigation } from '@react-navigation/native';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
-import { CartData } from '../../../data/Cart/Cart';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View, ScrollView, RefreshControl } from 'react-native';
 import FoodCardInCart from '../../../components/Cart/FoodCardInCart';
-import { useState } from 'react';
+import Icon5 from "react-native-vector-icons/MaterialIcons"
+import { useState, useEffect, useCallback } from 'react';
+import { Image } from 'expo-image';
+import { getCartByUserId, deleteCart } from '../../../services/api';
 
 export default function CartScreen() {
   const navigation = useNavigation();
-  const [cart, setCart] = useState(CartData);
+  const [cart, setCart] = useState(null);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+    useFocusEffect(
+      useCallback(() => {
+        const resetData = async () => {
+          const response = await getCartByUserId();
+          if (response) {
+            setCart(response.length > 0 ? response : null);
+          } else {
+            setCart(null);
+          }
+
+        };
+        resetData();
+        setIsLoading(false);
+  
+      }, [])
+    );
+
+  const loadData = async () => {
+    setRefreshing(true);
+    const response = await getCartByUserId();
+    if (response) {
+      setCart(response.length > 0 ? response : null);
+    } else {
+      setCart(null);
+    }
+    setRefreshing(false);
+    setIsLoading(false)
+  };
+  
+  useEffect(() => {
+    loadData()
+    // const interval = setInterval(() => {
+    //   loadData();
+    // }, 1000); 
+    // return () => clearInterval(interval); 
+  },[])
 
   const handleIncreaseQuantity = (id) => {
     console.log("Đang gọi tăng")
     setCart(prevCart =>
       prevCart.map(item =>
-        item.id === id 
-          ? { ...item, quantity: item.quantity + 1 } //Sao chép toàn bộ thuộc tính của item hiện tại và tăng số lượng lên 1
+        item.cart_id === id 
+          ? { ...item, food_quantity: item.food_quantity + 1 } //Sao chép toàn bộ thuộc tính của item hiện tại và tăng số lượng lên 1
           : item
       )
     );
@@ -25,40 +66,93 @@ export default function CartScreen() {
     console.log("Đang gọi giảm")
     setCart(prevCart =>
       prevCart.map(item =>
-        item.id === id && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
+        item.cart_id === id && item.food_quantity > 1
+          ? { ...item, food_quantity: item.food_quantity - 1 }
           : item
       )
     );
     console.log("Đã gọi giảm")
   };
   
-  const handleRemove = (id) => {
-    setCart(prevCart => prevCart.filter(item => item.id != id))
-  }
+  const handleRemove = async (id) => {
+    try {
+      // Gọi API xóa sản phẩm
+      await deleteCart(id);
+  
+      // Cập nhật lại danh sách giỏ hàng trong state
+      setCart((prevCart) => prevCart.filter((item) => item.cart_id !== id));
+      console.log(`Đã xóa sản phẩm có ID: ${id}`);
+    } catch (error) {
+      console.error(`Lỗi khi xóa sản phẩm có ID: ${id}`, error);
+    }
+  };
+  
 
   const calculateTotalAmount = (cart) => {
     return cart.reduce((total, item) => {
-
-      // Tổng tiền cho sản phẩm chính
-      const mainProductTotal = item.quantity * item.cost * (1 - item.discount / 100);
-      
-      // Tổng tiền cho Pepsi (nếu có)
-      const pepsiTotal = item.addons.pepsi.isHave 
-        ? item.addons.pepsi.quantity * item.addons.pepsi.cost_pepsi 
-        : 0;
+      // Tổng tiền món chính
+      const mainProductTotal = item.food.cost * item.food_quantity;
   
-      // Tổng tiền cho Sting (nếu có)
-      const stingTotal = item.addons.sting.isHave 
-        ? item.addons.sting.quantity * item.addons.sting.cost_sting 
-        : 0;
+      // Tổng tiền addons
+      const addonsTotal = item.addonList.reduce(
+        (addonSum, addon) => addonSum + addon.price * addon.quantity,
+        0
+      );
   
-      // Cộng tất cả vào tổng tiền
-      return total + mainProductTotal + pepsiTotal + stingTotal;
-
+      // Tổng tiền cho từng sản phẩm trong giỏ hàng
+      const itemTotal = mainProductTotal + addonsTotal;
+  
+      // Cộng tổng tiền sản phẩm vào tổng tiền của giỏ hàng
+      return total + itemTotal;
     }, 0); // Bắt đầu từ 0
   };
   
+  if(isLoading){
+      return(
+        <View style={styles.container}>
+          <View style={styles.headerContainer}>
+            <Text style={styles.txtHeader}>Giỏ hàng</Text>
+         </View>
+          <View style={{
+            width: "full", 
+            height: "full", 
+            justifyContent: "center",
+            alignItems: "center",
+            flex: 1
+          }}>
+            <Image 
+              source={require('../../../assets/loading.gif')} 
+              style={{height: 100, width: 100}}
+              contentFit="contain"
+            />
+          </View>
+        </View>
+  
+      )
+  }
+
+    if(!cart){
+      return(
+        <View style={styles.container}>
+            <View style={styles.headerContainer}>
+              <Text style={styles.txtHeader}>Giỏ hàng</Text>
+          </View>
+          <ScrollView
+            contentContainerStyle={{flexDirection: "column", alignItems: "center"}}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={loadData} />
+            }
+          >
+
+            <Icon5 name="add-shopping-cart" size={50} color={"rgba(250, 74, 12, 0.7)"} style={{marginTop: "25%"}}/>
+            <Text style={{ fontSize: 20, fontWeight: "500", marginTop: "5%" }}>
+              Không có sản phẩm trong giỏ hàng
+            </Text>
+          </ScrollView>
+        </View>
+
+      );
+    }
 
   return (
     <View style={styles.container}>
@@ -76,17 +170,19 @@ export default function CartScreen() {
       }}>
         <FlatList 
           data={cart}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.cart_id.toString()}
           renderItem={({item}) => (
             <FoodCardInCart
               item={item}
-              onIncrease={() => handleIncreaseQuantity(item.id)}
-              onDecrease={() => handleDecreaseQuantity(item.id)}
-              onRemove={() => handleRemove(item.id)}
+              onIncrease={() => handleIncreaseQuantity(item.cart_id)}
+              onDecrease={() => handleDecreaseQuantity(item.cart_id)}
+              onRemove={() => handleRemove(item.cart_id)}
             />
 
           )}
           contentContainerStyle={{ paddingHorizontal: 10 }}
+          refreshing={refreshing}
+          onRefresh={loadData} // Gọi hàm loadData khi người dùng kéo để làm mới
         />
       </View>
 
@@ -96,11 +192,12 @@ export default function CartScreen() {
           <Text style={styles.totalLabel}>Tổng cộng:</Text>
           <Text style={styles.totalAmount}>
             {calculateTotalAmount(cart).toLocaleString('vi-VN')}đ
+           
           </Text>
         </View>
         <TouchableOpacity
           style={styles.paymentButton}
-          onPress={() => navigation.navigate('ToPay',{totalAmount: calculateTotalAmount(cart)} )}
+          onPress={() => navigation.navigate('ToPay', {cart: cart, TongTien: calculateTotalAmount(cart)})}
         >
           <Text style={styles.paymentText}>Thanh toán</Text>
         </TouchableOpacity>

@@ -82,15 +82,11 @@ export default function CategoryScreen({ route }) {
           renderItem={({item}) => (
               <ProductCart item={item} onSelect={() => handleProductPress(item)} />
           )}
-          // contentContainerStyle={{
-          //   // paddingHorizontal: 10,
-          //   paddingVertical: 10,
-          // }}
-          ItemSeparatorComponent={() => <View style={{ height: 10, width:10 }} />}
+          // ItemSeparatorComponent={() => <View style={{ height: 10, width:10 }} />}
           showsHorizontalScrollIndicator={false}
           scrollEventThrottle={16}
           numColumns={2}
-          columnWrapperStyle={{ justifyContent: 'space-between' }} 
+          columnWrapperStyle={{ justifyContent: 'center' }} 
         />
 
       <BottomSheetComponent
@@ -106,7 +102,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f2f2f2",
-    padding: 10,
   },
   list: {
     paddingBottom: 20,

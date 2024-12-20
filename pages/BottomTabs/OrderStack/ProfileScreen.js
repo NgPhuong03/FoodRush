@@ -4,6 +4,7 @@ import { getUser } from '../../../services/api';
 import { useEffect, useState } from 'react';
 import { Button } from '@rneui/themed';
 import { Icon } from 'react-native-vector-icons/FontAwesome';
+import { updateUser } from '../../../services/api';
 
 export default function ProfileScreen() {
   const [userInfo, setUserInfo] = useState({});
@@ -11,13 +12,14 @@ export default function ProfileScreen() {
   const [isEditing, setIsEditing] = useState(false)
   const [editableUserInfo, setEditableUserInfo] = useState({}); 
 
+  const loadData = async () => {
+    const response = await getUser();
+    setUserInfo(response.result);
+    setEditableUserInfo(response.result);
+    setIsLoading(false);
+  }
+
   useEffect(() => {
-    const loadData = async () => {
-      const response = await getUser();
-      setUserInfo(response.result);
-      setEditableUserInfo(response.result);
-      setIsLoading(false);
-    }
     loadData()
   },[])
 
@@ -40,14 +42,22 @@ export default function ProfileScreen() {
   }
 
     // Xử lý khi nhấn nút Lưu
-    const handleSave = () => {
-      setUserInfo(editableUserInfo); // Cập nhật dữ liệu người dùng
-      setIsEditing(false); // Thoát chế độ chỉnh sửa
+    const handleSave = async () => {
+      try {
+        const response = await updateUser(editableUserInfo);
+          setUserInfo(response.result); // Cập nhật lại dữ liệu sau khi lưu thành công
+          setIsEditing(false); // Thoát chế độ chỉnh sửa
+          alert("Cập nhật thông tin thành công!");
+      } catch (error) {
+        console.error("Lỗi khi cập nhật thông tin:", error);
+        setIsEditing(false);
+        alert("Đã xảy ra lỗi. Vui lòng thử lại!");
+      }
     };
   
     // Xử lý khi nhấn nút Hủy
     const handleCancel = () => {
-      setEditableUserInfo(userInfo); // Khôi phục dữ liệu ban đầu
+      setEditableUserInfo(userInfo);
       setIsEditing(false); // Thoát chế độ chỉnh sửa
     };
 
@@ -101,7 +111,10 @@ export default function ProfileScreen() {
                             fontWeight: "600"
                           }]}
                 placeholder='Nhập email...'
-                defaultValue={userInfo.email}
+                value={editableUserInfo.email}
+                onChangeText={(text) =>
+                  setEditableUserInfo({ ...editableUserInfo, email: text })
+                }
                 numberOfLines={1}
                 editable={false}
               />
@@ -168,7 +181,10 @@ export default function ProfileScreen() {
                 <View style={{flexDirection: "row", width: "90%", justifyContent: "center"}}>
                     <Button
                       title="Chỉnh sửa"
-                      onPress={() => setIsEditing(true)}
+                      onPress={() => {
+                        loadData()
+                        setIsEditing(true)
+                      }}
                       loading={false}
                       icon={{
                         name: "edit",

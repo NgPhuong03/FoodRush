@@ -1,19 +1,103 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { OrderData } from '../../../data/Order/Order';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { StyleSheet, Text, TouchableOpacity, View, FlatList, ScrollView, RefreshControl} from 'react-native';
+import Icon5 from "react-native-vector-icons/MaterialCommunityIcons"
 import OrderCart from '../../../components/Order/OrderCard';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { getOrderByUserId } from '../../../services/api';
+import { Image } from 'expo-image';
+
 
 export default function HistoryScreen() {
   const navigation = useNavigation();
-  const [order, setOrder] = useState([])
+  const [order, setOrder] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
+    useFocusEffect(
+      useCallback(() => {
+        const resetData = async () => {
+          const response = await getOrderByUserId();
+          if (response) {
+            // Lọc đơn hàng theo trạng thái 'dangnau'
+            const filteredOrders = response.filter((item) => item.status === 'dagiao');
+            
+            // Sắp xếp theo 'create_at' giảm dần
+            const sortedOrders = filteredOrders.sort((a, b) => new Date(b.create_at) - new Date(a.create_at));
+            
+            setOrder(sortedOrders.length > 0 ? sortedOrders : null);
+          } else {
+            setOrder(null);
+          }
+  
+        };
+        resetData();
+        setIsLoading(false);
+  
+      }, [])
+    );
 
+  const loadData = async () => {
+    setRefreshing(true);
+    const response = await getOrderByUserId();
+    if (response) {
+          // Lọc đơn hàng theo trạng thái 'dangnau'
+          const filteredOrders = response.filter((item) => item.status === 'dagiao');
+          
+          // Sắp xếp theo 'create_at' giảm dần
+          const sortedOrders = filteredOrders.sort((a, b) => new Date(b.create_at) - new Date(a.create_at));
+          
+          setOrder(sortedOrders.length > 0 ? sortedOrders : null);
+    } else {
+      setOrder(null);
+    }
+    setRefreshing(false);
+    setIsLoading(false)
+  };
+  
   useEffect(() => {
-    // Lọc các đơn hàng có status = 'DangNau'
-    const filteredOrders = OrderData.filter((item) => item.status === 'DaGiao');
-    setOrder(filteredOrders);
-  }, []); // Chạy một lần sau khi component được mount
+    loadData()
+    // const interval = setInterval(() => {
+    //   loadData();
+    // }, 5000); // 10 giây một lần
+    // return () => clearInterval(interval); 
+  },[])
+
+    if(isLoading){
+      return(
+        <View style={styles.container}>
+          <View style={{
+            width: "full", 
+            height: "full", 
+            justifyContent: "center",
+            alignItems: "center",
+            flex: 1
+          }}>
+            <Image 
+              source={require('../../../assets/loading.gif')} 
+              style={{height: 100, width: 100}}
+              contentFit="contain"
+            />
+          </View>
+        </View>
+  
+      )
+    }
+  
+    if(!order){
+      return(
+        <ScrollView
+        contentContainerStyle={styles.container}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={loadData} />
+        }
+      >
+        <Icon5 name="chef-hat" size={50} color={"rgba(250, 74, 12, 0.7)"} />
+        <Text style={{ fontSize: 20, fontWeight: "500", marginTop: "5%" }}>
+          Không có đơn hàng nào
+        </Text>
+      </ScrollView>
+      );
+    }
 
   return (
     <View style={styles.container}>
@@ -38,6 +122,8 @@ export default function HistoryScreen() {
               </TouchableOpacity>
             )}
             contentContainerStyle={{ paddingHorizontal: 10 }}
+            refreshing={refreshing}
+            onRefresh={loadData} // Gọi hàm loadData khi người dùng kéo để làm mới
           />
       </View>
     </View>
@@ -55,6 +141,5 @@ const styles = StyleSheet.create({
   listOrder: {
     width: "100%",
     height: "95%",
-    borderWidth: 1,
   }
 });
