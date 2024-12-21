@@ -27,7 +27,7 @@ const AuthContextProvider = ({ children }) => {
       const sortedData = favor.result.sort((a, b) =>
         a.name.localeCompare(b.name)
       );
-      setFavourites(sortedData.length > 0 ? sortedData : null);
+      setFavourites(sortedData.length > 0 ? sortedData : []);
       setUser({
         email: form.email,
         password: form.password,

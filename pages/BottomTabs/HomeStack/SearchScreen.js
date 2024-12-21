@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 5,
     shadowOpacity: 0.3,
+    marginTop: 10
   },
   input: {
     width: "90%",

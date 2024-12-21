@@ -27,7 +27,9 @@ export default function HomeStack() {
           headerTitle: route.params.title, // Hiển thị tiêu đề là tên danh mục
         })}/>
         <Stack.Screen name="Search" component={SearchScreen}  
-          options={{headerTitle: ""}}/>
+          options={{
+            cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+            headerTitle: "Tìm kiếm"}}/>
     </Stack.Navigator>
   );
 }

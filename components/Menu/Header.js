@@ -1,24 +1,39 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Image } from 'expo-image';
 import { AuthContext } from "../../contexts/AuthContext";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import {getUser} from "../../services/api.js"
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Header() {
   const { LogOut } = useContext(AuthContext);
   const [userInfo, setUserInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   
-  useEffect(() => {
-    const loadData = async () => {
-      const response = await getUser();
-      console.log(response.result)
-      setUserInfo(response.result);
-      setIsLoading(false);
-    }
-    loadData()
-  },[])
+  // useEffect(() => {
+  //   const loadData = async () => {
+  //     const response = await getUser();
+  //     console.log(response.result)
+  //     setUserInfo(response.result);
+  //     setIsLoading(false);
+  //   }
+  //   loadData()
+  // },[])
+
+  
+    useFocusEffect(
+      useCallback(() => {
+        const resetData = async () => {
+          const response = await getUser();
+          console.log(response.result)
+          setUserInfo(response.result);  
+        };
+        resetData();
+        setIsLoading(false);
+  
+      }, [])
+    );
 
   return (
       <View style={styles.container}>

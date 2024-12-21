@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const API_URL = "http://192.168.1.4:8080/api";
+const API_URL = "http://10.0.145.195:8080/api";
 
 
 let user_id;

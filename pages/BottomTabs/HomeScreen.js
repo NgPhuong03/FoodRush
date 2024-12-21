@@ -18,6 +18,7 @@ import { CategoryData } from "../../data/Category";
 import BottomSheetComponent from "../../components/BottomSheet";
 import axios from "axios";
 import { fetchAllFood, fetchAllTop } from "../../services/api";
+import { timing } from "react-native-reanimated";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -98,10 +99,10 @@ export default function HomeScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.viewHeader}>
-        <Text style={styles.address}>Khu phố 6, phường Linh Trung</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
+        <Text style={styles.title}>FoodRush</Text>
+        {/* <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
           <Icon name="bell" size={27} color="white" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       {/* Thanh Tìm Kiếm Sticky */}
@@ -121,16 +122,16 @@ export default function HomeScreen() {
           },
         ]}
       >
-        <View style={styles.inputContainer} >
+        <TouchableOpacity style={styles.inputContainer}
+                    onPress={() => {navigation.navigate("Search",{all})}} >
           <Icon name="search" size={20} color="black" style={styles.icon} />
-          <TextInput
+          <Text
             style={styles.input}
-            onPress={() => {navigation.navigate("Search",{all})}}
-            placeholder="Bạn đang đói à?"
-            placeholderTextColor="#FFA8A8"
-            readOnly
-          />
-        </View>
+            // placeholder="Bạn đang đói à?"
+            // placeholderTextColor="#FFA8A8"
+            // readOnly
+          >Bạn đang đói à?</Text>
+        </TouchableOpacity>
       </Animated.View>
 
       <Animated.ScrollView
@@ -164,7 +165,9 @@ export default function HomeScreen() {
           <View style={{ flexDirection: "row", paddingHorizontal: 10, paddingVertical: 10 }}>
             <Text style={styles.txtTrend}>Thịnh hành hôm nay</Text>
             <TouchableOpacity style={styles.btnMore} >
-              <Text style={styles.txtMore}>Xem thêm</Text>
+              <Text style={styles.txtMore} 
+                onPress={() => navigation.navigate("Category", {item: data.topSale, title: "Thịnh hành hôm nay"})}
+              >Xem thêm</Text>
             </TouchableOpacity>
           </View>
 
@@ -193,7 +196,9 @@ export default function HomeScreen() {
           <View style={{ flexDirection: "row", paddingHorizontal: 10, paddingVertical: 10 }}>
             <Text style={styles.txtTopRV}>Đánh giá cao</Text>
             <TouchableOpacity style={styles.btnMoreTop}>
-              <Text style={styles.txtMoreTop}>Xem thêm</Text>
+              <Text style={styles.txtMoreTop}
+                onPress={() => navigation.navigate("Category", {item: data.topRating, title: "Đánh giá cao"})}
+              >Xem thêm</Text>
             </TouchableOpacity>
           </View>
 
@@ -218,7 +223,9 @@ export default function HomeScreen() {
           <View style={{ flexDirection: "row", paddingHorizontal: 10, paddingVertical: 10 }}>
             <Text style={styles.txtTopRV}>Phổ biến</Text>
             <TouchableOpacity style={styles.btnMoreTop}>
-              <Text style={styles.txtMoreTop}>Xem thêm</Text>
+              <Text style={styles.txtMoreTop}
+                onPress={() => navigation.navigate("Category", {item: data.topOrder, title: "Phổ biến"})}
+              >Xem thêm</Text>
             </TouchableOpacity>
           </View>
 
@@ -269,18 +276,18 @@ const styles = StyleSheet.create({
   viewHeader: {
     width: "100%",
     height: 100,
-    backgroundColor: "#fa4a0c",
+    backgroundColor:  "rgba(255, 189, 115, 0.6)",
     flexDirection: "row",
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingTop: 25,
-    borderWidth: 1
   },
-  address: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '400',
-    textAlign: "left"
+  title: {
+    color: '#fa4a0c',
+    fontSize: 25,
+    fontWeight: '600',
+    textAlign: "center",
+    width: "100%"
   },
   containerChild: {
     width: "100%",
@@ -308,7 +315,6 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 5,
     shadowOpacity: 0.3,
-
   },
   input: {
     width: "90%",
@@ -316,7 +322,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
     fontSize: 20,
-    color: "#FA4A0C"
+    color: "#FFA8A8"
   },
   icon: {
     marginLeft: 10,

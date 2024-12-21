@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Keyboard, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Keyboard, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AddressCard from '../../../components/Cart/AddressCard';
 import PayMethodCard from '../../../components/Cart/PayMethodCard';
@@ -32,9 +32,10 @@ export default function PayScreen({route}) {
     const response = await createOrder(formattedOrder);
 
     if (response.code === 1000) {
-      alert("Đặt hàng thành công!");
+      Alert.alert("Thông báo", "Đặt hàng thành công!");
+      
     } else {
-      alert("Đặt hàng thất bại: " + response.message);
+      Alert.alert("Thông báo", "Đặt hàng thất bại: " + response.message);
     }
 
   }

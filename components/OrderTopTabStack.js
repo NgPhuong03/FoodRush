@@ -1,10 +1,11 @@
-import { createStackNavigator } from "@react-navigation/stack";
+import {CardStyleInterpolators, createStackNavigator } from "@react-navigation/stack";
 import DeliveringScreen from "../pages/BottomTabs/OrderStack/DeliveringScreen";
 import HistoryScreen from "../pages/BottomTabs/OrderStack/HistoryScreen";
 import OrderScreen from "../pages/BottomTabs/OrderStack/OrderScreen";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import FollowingOrder from "../pages/BottomTabs/OrderStack/FollowingOrder";
 import OrderDetailsScreen from "../pages/BottomTabs/OrderStack/OrderDetailsScreen";
+import ReviewScreen from "../pages/BottomTabs/OrderStack/ReviewScreen";
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
@@ -36,8 +37,13 @@ export default function OrderTopTabStack() {
   return (
   <Stack.Navigator>
     <Stack.Screen name="Main" component={TopTab} options={{headerShown: false}}/>
-    <Stack.Screen name="FollowingOrder" component={FollowingOrder} options={{headerTitle: 'Theo dõi đơn hàng'}}/>
-    <Stack.Screen name="OrderDetails" component={OrderDetailsScreen} options={{headerTitle: 'Chi tiết đơn hàng'}}/>
+    <Stack.Screen name="FollowingOrder" component={FollowingOrder} options={{
+      cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+      headerTitle: 'Theo dõi đơn hàng'}}/>
+    <Stack.Screen name="OrderDetails" component={OrderDetailsScreen} options={{
+      cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+      headerTitle: 'Chi tiết đơn hàng'}}/>
+    <Stack.Screen name="Review" component={ReviewScreen} options={{headerTitle: 'Đánh giá'}}/>
   </Stack.Navigator>
   );
 }
