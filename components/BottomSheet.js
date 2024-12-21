@@ -1,13 +1,27 @@
-import React, {useEffect, useState} from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, TextInput } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+} from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import Icon from "react-native-vector-icons/FontAwesome";
-import Icon5 from "react-native-vector-icons/FontAwesome5"
-import { Button } from '@rneui/themed';
-import { addToCart, addFavorite} from "../services/api";
+import Icon5 from "react-native-vector-icons/FontAwesome5";
+import { Button } from "@rneui/themed";
+import { addToCart, addFavorite } from "../services/api";
+import { AuthContext } from "../contexts/AuthContext";
 
-
-const BottomSheetComponent = ({ bottomSheetRef, snapPoints, selectedProduct }) => {
+const BottomSheetComponent = ({
+  bottomSheetRef,
+  snapPoints,
+  selectedProduct,
+}) => {
+  const { favorites, addToFavourite , unFavourite} = useContext(AuthContext);
+  const [isFavor, setFavor] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [included, setInclude] = useState([
     { id: 1, name: "Pepsi", price: 10000, selected: false, quantity: 1 },
@@ -22,6 +36,8 @@ const BottomSheetComponent = ({ bottomSheetRef, snapPoints, selectedProduct }) =
       { id: 2, name: "Sting", price: 12000, selected: false, quantity: 1 },
     ]);
     setQuantity(1);
+
+    setFavor(favorites.some((obj) => selectedProduct?.id === obj.id));
   }, [selectedProduct]); // Reset khi product thay đổi
 
   const incrementMainQuantity = () => setQuantity((prev) => prev + 1);
@@ -58,28 +74,37 @@ const BottomSheetComponent = ({ bottomSheetRef, snapPoints, selectedProduct }) =
   };
 
   const calculateTotalCost = () => {
-    const productCost = selectedProduct.sale > 0 ? (selectedProduct.cost - (selectedProduct.cost * selectedProduct.sale) / 100) * quantity : selectedProduct.cost * quantity;
-    const includedCost = included.reduce((total, item) => item.selected ? total + (item.price * item.quantity) : total, 0);
+    const productCost =
+      selectedProduct.sale > 0
+        ? (selectedProduct.cost -
+            (selectedProduct.cost * selectedProduct.sale) / 100) *
+          quantity
+        : selectedProduct.cost * quantity;
+    const includedCost = included.reduce(
+      (total, item) =>
+        item.selected ? total + item.price * item.quantity : total,
+      0
+    );
     return productCost + includedCost;
   };
 
   const handleAddToCart = async () => {
     if (!selectedProduct) {
-      alert('Không có sản phẩm nào được chọn!');
+      alert("Không có sản phẩm nào được chọn!");
       return;
     }
-  
+
     const cartItem = {
       food_id: selectedProduct.id, // ID của sản phẩm chính
       food_quantity: quantity, // Số lượng sản phẩm chính
       addon: included
-        .filter(item => item.selected) // Chỉ lấy các addon được chọn
-        .map(item => ({
+        .filter((item) => item.selected) // Chỉ lấy các addon được chọn
+        .map((item) => ({
           addon_id: item.id, // ID của addon
           addon_quantity: item.quantity, // Số lượng của addon
         })),
     };
-  
+
     console.log(JSON.stringify(cartItem, null, 2));
 
     const response = await addToCart(cartItem);
@@ -89,19 +114,13 @@ const BottomSheetComponent = ({ bottomSheetRef, snapPoints, selectedProduct }) =
     } else {
       alert("Thêm vào giỏ hàng thất bại: " + response.message);
     }
-    
-    bottomSheetRef.current?.close()
+
+    bottomSheetRef.current?.close();
   };
-  
-  const handleAddFavorite = async (id) =>{
-        try {
-          // Gọi API xóa sản phẩm
-          await addFavorite(id);
-      
-          console.log(`Đã like sản phẩm có ID: ${id}`);
-        } catch (error) {
-          console.error(`Lỗi khi like sản phẩm có ID: ${id}`, error);
-        }
+
+  const handleFavorPress = (item) => {
+    isFavor ? unFavourite(item.id) : addToFavourite(selectedProduct);
+    setFavor(!isFavor);
   }
 
   return (
@@ -114,214 +133,281 @@ const BottomSheetComponent = ({ bottomSheetRef, snapPoints, selectedProduct }) =
         if (index === -1) {
           setIsExpanded(false); // Đặt lại isExpanded khi BottomSheet đóng
           setInclude([
-            { id: 1, name: "Pepsi", price: 10000, selected: false, quantity: 1 },
-            { id: 2, name: "Sting", price: 12000, selected: false, quantity: 1 },
+            {
+              id: 1,
+              name: "Pepsi",
+              price: 10000,
+              selected: false,
+              quantity: 1,
+            },
+            {
+              id: 2,
+              name: "Sting",
+              price: 12000,
+              selected: false,
+              quantity: 1,
+            },
           ]);
-          setQuantity(1)
+          setQuantity(1);
         }
-      }} 
+      }}
     >
       <BottomSheetView style={styles.contentContainer}>
-        {selectedProduct ?  (
-          <View style={{flex: 1}}>
-              <ScrollView  
-               contentContainerStyle={{ flexGrow: 1 }}
-               nestedScrollEnabled={true} // Cho phép cuộn bên trong BottomSheet
-               showsVerticalScrollIndicator={true}
-               style={{paddingHorizontal: 10, height: "80%"}}
-              >
-                  {/* Thông tin về món ăn  */}
-                <View style={{flexDirection: "row"}}>
-                  {/* Hình ảnh sản phẩm  */}
-                  <Image 
-                    source={{ uri: selectedProduct.image}}
-                    style={styles.productImage}
-                  />
+        {selectedProduct ? (
+          <View style={{ flex: 1 }}>
+            <ScrollView
+              contentContainerStyle={{ flexGrow: 1 }}
+              nestedScrollEnabled={true} // Cho phép cuộn bên trong BottomSheet
+              showsVerticalScrollIndicator={true}
+              style={{ paddingHorizontal: 10, height: "80%" }}
+            >
+              {/* Thông tin về món ăn  */}
+              <View style={{ flexDirection: "row" }}>
+                {/* Hình ảnh sản phẩm  */}
+                <Image
+                  source={{ uri: selectedProduct.image }}
+                  style={styles.productImage}
+                />
 
-                  {/* Thông tin sản phẩm / */}
-                  <View style={{width: "55%", maxHeight: 100, paddingHorizontal: 10, justifyContent: "space-between"}}>
-                    <Text style={styles.txtName} numberOfLines={2} ellipsizeMode="tail">{selectedProduct.name}</Text>
+                {/* Thông tin sản phẩm / */}
+                <View
+                  style={{
+                    width: "55%",
+                    maxHeight: 100,
+                    paddingHorizontal: 10,
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text
+                    style={styles.txtName}
+                    numberOfLines={2}
+                    ellipsizeMode="tail"
+                  >
+                    {selectedProduct.name}
+                  </Text>
 
-                    <View style={styles.ReviewContainer}>
-                      <Text style={styles.txtStar}>{selectedProduct.star}</Text>
-                      <Icon name="star" color="#FA4A0C" size={16} style={styles.iconStar}/>
-                      <Text style={styles.txtCount}>({selectedProduct.count_rv})</Text>
-                    </View>
-
-                    <View style={styles.CostContainer} >
-                      {selectedProduct.sale > 0 ? (
-                              <>
-                              <Text style={styles.txtCostDaGiam}>
-                                  {(selectedProduct.cost - (selectedProduct.cost * selectedProduct.sale) / 100).toLocaleString("vi-VN")}đ
-                              </Text>
-                              <Text style={styles.txtCost}>
-                                  {selectedProduct.cost.toLocaleString("vi-VN")}đ
-                              </Text>
-
-                              </>
-                          ) : (
-                              <Text style={styles.txtCostDaGiam}>
-                              {selectedProduct.cost.toLocaleString("vi-VN")}đ
-                              </Text>
-                          )}
-                      </View>
+                  <View style={styles.ReviewContainer}>
+                    <Text style={styles.txtStar}>{selectedProduct.star}</Text>
+                    <Icon
+                      name="star"
+                      color="#FA4A0C"
+                      size={16}
+                      style={styles.iconStar}
+                    />
+                    <Text style={styles.txtCount}>
+                      ({selectedProduct.count_rv})
+                    </Text>
                   </View>
 
-                    {/* Thả tim nè hihi  */}
-                    <View style={{width: "15%", justifyContent: "center", alignItems: "center"}}>
-                      <TouchableOpacity style={styles.bgIcon} onPress={() => handleAddFavorite(selectedProduct.id)}>
-                        <Icon name="heart-o" size={24} color="#ACABAB" />
-                      </TouchableOpacity>
-                  </View> 
+                  <View style={styles.CostContainer}>
+                    {selectedProduct.sale > 0 ? (
+                      <>
+                        <Text style={styles.txtCostDaGiam}>
+                          {(
+                            selectedProduct.cost -
+                            (selectedProduct.cost * selectedProduct.sale) / 100
+                          ).toLocaleString("vi-VN")}
+                          đ
+                        </Text>
+                        <Text style={styles.txtCost}>
+                          {selectedProduct.cost.toLocaleString("vi-VN")}đ
+                        </Text>
+                      </>
+                    ) : (
+                      <Text style={styles.txtCostDaGiam}>
+                        {selectedProduct.cost.toLocaleString("vi-VN")}đ
+                      </Text>
+                    )}
+                  </View>
                 </View>
 
-                  {/* Mô tả  */}
-                <View style={styles.descriContainer}>
-                  <Text style={styles.title}>Mô tả</Text>
-                  <Text
-                    style={[
-                      styles.description,
-                      !isExpanded && { height: 100, overflow: "hidden" }, // Giới hạn chiều cao khi không mở rộng
-                    ]}
-                    numberOfLines={isExpanded ? undefined : 5} // Hiện số dòng giới hạn nếu không mở rộng
+                {/* Thả tim nè hihi  */}
+                <View
+                  style={{
+                    width: "15%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <TouchableOpacity
+                    style={styles.bgIcon}
+                    onPress={() => handleFavorPress(selectedProduct)}
                   >
-                    {selectedProduct.description}
+                    {isFavor ? <Icon name="heart" size={20} color={'#FA4A0C'}/> : <Icon name="heart-o" size={24} color="#ACABAB" /> }
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* Mô tả  */}
+              <View style={styles.descriContainer}>
+                <Text style={styles.title}>Mô tả</Text>
+                <Text
+                  style={[
+                    styles.description,
+                    !isExpanded && { height: 100, overflow: "hidden" }, // Giới hạn chiều cao khi không mở rộng
+                  ]}
+                  numberOfLines={isExpanded ? undefined : 5} // Hiện số dòng giới hạn nếu không mở rộng
+                >
+                  {selectedProduct.description}
+                </Text>
+                <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)}>
+                  <Text style={styles.toggleText}>
+                    {isExpanded ? "Thu gọn" : "Xem thêm"}
                   </Text>
-                  <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)}>
-                    <Text style={styles.toggleText}>
-                      {isExpanded ? "Thu gọn" : "Xem thêm"}
-                    </Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Kèm theo  */}
+              <View
+                style={[
+                  styles.ktheoContainer,
+                  {
+                    backgroundColor:
+                      included[0].selected || included[1].selected
+                        ? "rgba(250, 74, 12, 0.1)"
+                        : "rgba(242, 242, 242, 0.6)",
+                  },
+                ]}
+              >
+                <View style={styles.titleContainer}>
+                  <Text style={styles.titleKtheo}>Kèm theo</Text>
+                  <Text style={styles.warning}>*Không bắt buộc</Text>
+                </View>
+
+                {included.map((item) => (
+                  <View key={item.id} style={{ marginVertical: 10 }}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <View
+                        style={{ width: "50%", flexDirection: "row", gap: 5 }}
+                      >
+                        <TouchableOpacity
+                          onPress={() => toggleItem(item.id)}
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Icon
+                            name={item.selected ? "check-square" : "square-o"}
+                            size={24}
+                            color={item.selected ? "#FA4A0C" : null}
+                          />
+                        </TouchableOpacity>
+                        <Text
+                          style={{
+                            fontSize: 20,
+                            color: item.selected ? "#fa4a0c" : "#ACABAB",
+                            alignItems: "center",
+                          }}
+                        >
+                          {item.name}
+                        </Text>
+                      </View>
+
+                      <View
+                        style={{
+                          width: "50%",
+                          flexDirection: "row",
+                          justifyContent: "flex-end",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            color: item.selected ? "#fa4a0c" : "#ACABAB",
+                          }}
+                        >
+                          + {item.price.toLocaleString("vi-VN")}đ
+                        </Text>
+
+                        {item.selected && (
+                          <View style={styles.quantityContainer}>
+                            <TouchableOpacity
+                              style={styles.quantityButton}
+                              onPress={() => decrementQuantity(item.id)}
+                            >
+                              <Icon5
+                                name="minus-circle"
+                                color={"#fa4a0c"}
+                                size={20}
+                              />
+                            </TouchableOpacity>
+
+                            <Text style={styles.quantityText}>
+                              {item.quantity}
+                            </Text>
+
+                            <TouchableOpacity
+                              style={styles.quantityButton}
+                              onPress={() => incrementQuantity(item.id)}
+                            >
+                              <Icon5
+                                name="plus-circle"
+                                color={"#fa4a0c"}
+                                size={20}
+                              />
+                            </TouchableOpacity>
+                          </View>
+                        )}
+                      </View>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            </ScrollView>
+
+            {/* Tổng tiền  */}
+            <View style={styles.footerContainer}>
+              <View style={styles.footerCost}>
+                <Text style={styles.txtTongTien}>Tổng số tiền</Text>
+
+                <Text style={styles.txtTongTien}>
+                  {calculateTotalCost().toLocaleString("vi-VN")}đ
+                </Text>
+              </View>
+
+              <View style={styles.footerBtn}>
+                <View style={styles.quantityProductContainer}>
+                  <TouchableOpacity onPress={decrementMainQuantity}>
+                    <Icon5 name="minus-circle" color={"#fa4a0c"} size={24} />
+                  </TouchableOpacity>
+
+                  <Text style={styles.quantityProduct}>{quantity}</Text>
+
+                  <TouchableOpacity onPress={incrementMainQuantity}>
+                    <Icon5 name="plus-circle" color={"#fa4a0c"} size={24} />
                   </TouchableOpacity>
                 </View>
 
-                  {/* Kèm theo  */}
-                <View style={[styles.ktheoContainer, { 
-                    backgroundColor: (included[0].selected || included[1].selected) 
-                              ?  "rgba(250, 74, 12, 0.1)"
-                              : "rgba(242, 242, 242, 0.6)" ,
-                  }]}>
-                    <View style={styles.titleContainer}>
-                      <Text style={styles.titleKtheo}>Kèm theo</Text>
-                      <Text style={styles.warning}>*Không bắt buộc</Text>
-                    </View>
-
-                    {included.map((item) => (
-                      <View
-                        key={item.id}
-                        style={{marginVertical: 10}}
-                      >
-                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                          <View style={{width: "50%",flexDirection: 'row', gap: 5}}>
-                            <TouchableOpacity onPress={() => toggleItem(item.id)}
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: "center"
-                              }}  
-                            >
-                                <Icon name={item.selected ? "check-square" : "square-o" } size={24} color={item.selected ? "#FA4A0C" : null}/>
-                            </TouchableOpacity>
-                            <Text style={{
-                              fontSize: 20, 
-                              color: item.selected ? "#fa4a0c" : "#ACABAB",
-                              alignItems: "center",
-                              }}>
-                                {item.name}
-                            </Text>       
-                          </View>
-
-                          <View style={{width: "50%" , flexDirection: 'row', justifyContent: "flex-end"}}>
-                            <Text style={{fontSize: 16, color: item.selected ? "#fa4a0c" : "#ACABAB"}}>
-                              + {item.price.toLocaleString("vi-VN")}đ
-                            </Text>
-                            
-                            {item.selected && (
-                              <View style={styles.quantityContainer}>
-                                  <TouchableOpacity
-                                    style={styles.quantityButton}
-                                    onPress={() => decrementQuantity(item.id)}
-                                  >
-                                    <Icon5 name="minus-circle" color={"#fa4a0c"} size={20}/>
-                                  </TouchableOpacity>
-
-                                  <Text style={styles.quantityText}>{item.quantity}</Text>
-
-                                  <TouchableOpacity
-                                    style={styles.quantityButton}
-                                    onPress={() => incrementQuantity(item.id)}
-                                  >
-                                    <Icon5 name="plus-circle" color={"#fa4a0c"} size={20}/>
-                                  </TouchableOpacity>
-                              </View>
-                            )}
-                          </View>
-
-                        
-
-                        </View>
-
-                      </View>
-                    ))}
-
-
-                </View>
-              </ScrollView>
-
-                {/* Tổng tiền  */}
-              <View style={styles.footerContainer}>
-                <View style={styles.footerCost}>
-                  <Text style={styles.txtTongTien}>
-                    Tổng số tiền
-                  </Text>
-
-                  <Text style={styles.txtTongTien}>
-                    {calculateTotalCost().toLocaleString("vi-VN")}đ
-                  </Text>
-                </View>
-
-                <View style={styles.footerBtn}>
-                    <View style={styles.quantityProductContainer}>
-                        <TouchableOpacity
-                          onPress={decrementMainQuantity}
-                        >
-                            <Icon5 name="minus-circle" color={"#fa4a0c"} size={24}/>
-                        </TouchableOpacity>
-
-                        <Text style={styles.quantityProduct}>{quantity}</Text>
-
-                        <TouchableOpacity
-                          onPress={incrementMainQuantity}
-                        >
-                              <Icon5 name="plus-circle" color={"#fa4a0c"} size={24}/>
-                        </TouchableOpacity>
-                    </View>  
-
-                    <Button
-                      title="Thêm vào giỏ hàng"
-                      onPress={handleAddToCart}
-                      loading={false}
-                      buttonStyle={{
-                        backgroundColor: '#fa4a0c',
-                        borderRadius: 15,
-                      }}
-                      containerStyle={{
-                        width: 230,
-                        marginVertical: 5,
-
-                      }}
-                      titleStyle={{
-                        fontSize: 18,
-                        fontWeight: 600
-                      }}
-                  />          
-                </View>
+                <Button
+                  title="Thêm vào giỏ hàng"
+                  onPress={handleAddToCart}
+                  loading={false}
+                  buttonStyle={{
+                    backgroundColor: "#fa4a0c",
+                    borderRadius: 15,
+                  }}
+                  containerStyle={{
+                    width: 230,
+                    marginVertical: 5,
+                  }}
+                  titleStyle={{
+                    fontSize: 18,
+                    fontWeight: 600,
+                  }}
+                />
               </View>
+            </View>
           </View>
-
-
         ) : (
           <View>
             <Image
-              source={require('../assets/loading.gif')} // Đường dẫn tới file GIF
+              source={require("../assets/loading.gif")} // Đường dẫn tới file GIF
               style={{ width: 100, height: 100 }} // Điều chỉnh kích thước GIF
             />
           </View>
@@ -343,7 +429,7 @@ const styles = StyleSheet.create({
     width: "30%",
     height: 100,
     borderRadius: 10,
-    borderWidth: 1
+    borderWidth: 1,
   },
   txtName: {
     width: "98%",
@@ -359,13 +445,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     gap: 2,
-    paddingHorizontal: 2
+    paddingHorizontal: 2,
   },
   txtStar: {
     fontSize: 12,
     textAlign: "left",
     display: "flex",
-    alignItems: "center"
+    alignItems: "center",
   },
   txtCount: {
     marginLeft: 5,
@@ -383,7 +469,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
     marginTop: 5,
     gap: 2,
-
   },
   txtCost: {
     fontSize: 12,
@@ -394,7 +479,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     textAlignVertical: "bottom", // Nội dung nằm sát dưới
     textDecorationLine: "line-through",
-    paddingLeft: 5
+    paddingLeft: 5,
   },
   txtCostDaGiam: {
     fontSize: 20,
@@ -407,13 +492,12 @@ const styles = StyleSheet.create({
     textAlignVertical: "bottom", // Nội dung nằm sát dưới
   },
   bgIcon: {
-    backgroundColor: "rgba(255, 189, 115, 0.6)",
     borderRadius: 5,
     padding: 5,
     width: 35,
     height: 35,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   descriContainer: {
     marginVertical: 10,
@@ -435,18 +519,17 @@ const styles = StyleSheet.create({
     marginTop: 5,
     textAlign: "center",
   },
-  ktheoContainer:{
+  ktheoContainer: {
     width: "100%",
     borderRadius: 5,
     borderStyle: "solid",
     borderColor: "#acabab",
     borderWidth: 1,
     paddingHorizontal: 10,
-
   },
   titleContainer: {
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   titleKtheo: {
     fontSize: 18,
@@ -455,7 +538,7 @@ const styles = StyleSheet.create({
     color: "#000",
     textAlign: "left",
     textAlignVertical: "bottom",
-    paddingTop: 1
+    paddingTop: 1,
   },
   warning: {
     fontSize: 16,
@@ -463,20 +546,20 @@ const styles = StyleSheet.create({
     height: 30,
     color: "#F40303",
     textAlignVertical: "bottom",
-    paddingTop: 2
+    paddingTop: 2,
   },
   quantityContainer: {
-    flexDirection:'row',
+    flexDirection: "row",
     width: "50%",
     justifyContent: "center",
-    gap: 6
+    gap: 6,
   },
   quantityText: {
     fontSize: 16,
     fontWeight: 500,
     color: "black",
     textAlign: "center",
-    width: 20
+    width: 20,
   },
   footerContainer: {
     height: "25%",
@@ -485,16 +568,16 @@ const styles = StyleSheet.create({
     shadowColor: "rgba(0, 0, 0, 0.25)",
     shadowOffset: {
       width: 4,
-      height: 0
+      height: 0,
     },
     shadowRadius: 4,
     elevation: 4,
     shadowOpacity: 1,
-    padding:10,
-    borderTopWidth: 1
+    padding: 10,
+    borderTopWidth: 1,
   },
   footerCost: {
-    flexDirection: 'row',
+    flexDirection: "row",
     justifyContent: "space-between",
   },
   txtTongTien: {
@@ -510,20 +593,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     height: "70%",
     alignItems: "center",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   quantityProductContainer: {
-    flexDirection:'row',
+    flexDirection: "row",
     width: "30%",
     justifyContent: "flex-start",
     gap: 6,
   },
   btnAddCart: {
     width: "70%",
-    height:"80%",
+    height: "80%",
     backgroundColor: "#fa4a0c",
     alignContent: "center",
-    borderRadius: 10
+    borderRadius: 10,
   },
   txtAddCart: {
     height: "100%",
@@ -539,10 +622,9 @@ const styles = StyleSheet.create({
   },
   quantityProduct: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     width: 25,
     height: 25,
-    textAlign: "center"
-  }
-
+    textAlign: "center",
+  },
 });
