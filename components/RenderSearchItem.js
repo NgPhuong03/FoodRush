@@ -1,10 +1,11 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default RenderSearchItem = ({ item, navigation }) => {
+
   return (
     <TouchableOpacity
       style={styles.item}
-      onPress={() => navigation.navigate("ProductDetails", { item })}
+      onPress={() => {navigation.navigate("ProductDetails", { item })}}
     >
       <View style={styles.contentContainer}>
         <Image source={{ uri: item.image }} style={styles.img} />

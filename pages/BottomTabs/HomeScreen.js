@@ -17,13 +17,15 @@ import CategoriesCart from "../../components/Home/CategoriesCard";
 import { CategoryData } from "../../data/Category";
 import BottomSheetComponent from "../../components/BottomSheet";
 import axios from "axios";
-import { fetchAllTop } from "../../services/api";
+import { fetchAllFood, fetchAllTop } from "../../services/api";
+import { timing } from "react-native-reanimated";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
   const [selectedProduct, setSelectedProduct] = useState(null); // Lưu sản phẩm được chọn
   const bottomSheetRef = useRef(null);
   const [data, setData] = useState({});
+  const [all, setAllFood] = useState({});
   const [isLoading, setLoading] = useState(true);
   const scrollY = useRef(new Animated.Value(0)).current;
   // Các điểm snap
@@ -35,9 +37,11 @@ export default function HomeScreen() {
     useCallback(() => {
       const resetData = async () => {
         setLoading(true);
+        const res_all = await fetchAllFood();
         const res = await fetchAllTop();
-        if (res) {
+        if (res && res_all ) {
           setData(res);
+          setAllFood(res_all);
           setLoading(false);
         }
       };
@@ -65,14 +69,17 @@ export default function HomeScreen() {
   // }, [])
   
   const handleProductPress = (product) => {
-    bottomSheetRef.current?.expand();
+    if (selectedProduct === product) {
+      bottomSheetRef.current?.expand();
+    }
     setSelectedProduct(product); // Cập nhật sản phẩm được chọn
   };
   
   // Mở BottomSheet khi selectedProduct thay đổi
   useEffect(() => {
     if (selectedProduct && bottomSheetRef.current) {
-      console.log("Selected: ", selectedProduct.name);
+      
+    bottomSheetRef.current?.expand();
     }
   }, [selectedProduct]);
   
@@ -92,10 +99,10 @@ export default function HomeScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.viewHeader}>
-        <Text style={styles.title}>FoodRush </Text>
-        <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
+        <Text style={styles.title}>FoodRush</Text>
+        {/* <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
           <Icon name="bell" size={27} color="white" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       {/* Thanh Tìm Kiếm Sticky */}
@@ -115,13 +122,16 @@ export default function HomeScreen() {
           },
         ]}
       >
-          <TouchableOpacity style={styles.inputContainer}  
-                onPress={() => {navigation.navigate("Search")}}>
-            <Icon name="search" size={20} color="black" style={styles.icon} />
-            <Text
-              style={styles.input}
-            >Bạn đang đói à?</Text>
-          </TouchableOpacity>
+        <TouchableOpacity style={styles.inputContainer}
+                    onPress={() => {navigation.navigate("Search",{all})}} >
+          <Icon name="search" size={20} color="black" style={styles.icon} />
+          <Text
+            style={styles.input}
+            // placeholder="Bạn đang đói à?"
+            // placeholderTextColor="#FFA8A8"
+            // readOnly
+          >Bạn đang đói à?</Text>
+        </TouchableOpacity>
       </Animated.View>
 
       <Animated.ScrollView
@@ -155,7 +165,9 @@ export default function HomeScreen() {
           <View style={{ flexDirection: "row", paddingHorizontal: 10, paddingVertical: 10 }}>
             <Text style={styles.txtTrend}>Thịnh hành hôm nay</Text>
             <TouchableOpacity style={styles.btnMore} >
-              <Text style={styles.txtMore}>Xem thêm</Text>
+              <Text style={styles.txtMore} 
+                onPress={() => navigation.navigate("Category", {item: data.topSale, title: "Thịnh hành hôm nay"})}
+              >Xem thêm</Text>
             </TouchableOpacity>
           </View>
 
@@ -184,7 +196,9 @@ export default function HomeScreen() {
           <View style={{ flexDirection: "row", paddingHorizontal: 10, paddingVertical: 10 }}>
             <Text style={styles.txtTopRV}>Đánh giá cao</Text>
             <TouchableOpacity style={styles.btnMoreTop}>
-              <Text style={styles.txtMoreTop}>Xem thêm</Text>
+              <Text style={styles.txtMoreTop}
+                onPress={() => navigation.navigate("Category", {item: data.topRating, title: "Đánh giá cao"})}
+              >Xem thêm</Text>
             </TouchableOpacity>
           </View>
 
@@ -209,7 +223,9 @@ export default function HomeScreen() {
           <View style={{ flexDirection: "row", paddingHorizontal: 10, paddingVertical: 10 }}>
             <Text style={styles.txtTopRV}>Phổ biến</Text>
             <TouchableOpacity style={styles.btnMoreTop}>
-              <Text style={styles.txtMoreTop}>Xem thêm</Text>
+              <Text style={styles.txtMoreTop}
+                onPress={() => navigation.navigate("Category", {item: data.topOrder, title: "Phổ biến"})}
+              >Xem thêm</Text>
             </TouchableOpacity>
           </View>
 
@@ -260,20 +276,18 @@ const styles = StyleSheet.create({
   viewHeader: {
     width: "100%",
     height: 100,
-    backgroundColor: "#fa4a0c",
+    backgroundColor:  "rgba(255, 189, 115, 0.6)",
     flexDirection: "row",
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingTop: 25,
-    borderWidth: 1
   },
   title: {
-    color: 'white',
+    color: '#fa4a0c',
     fontSize: 25,
     fontWeight: '600',
-    textAlign: "left",
-    borderWidth: 1,
-    width: "70%"
+    textAlign: "center",
+    width: "100%"
   },
   containerChild: {
     width: "100%",
