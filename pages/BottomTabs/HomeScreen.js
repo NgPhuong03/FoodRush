@@ -17,13 +17,14 @@ import CategoriesCart from "../../components/Home/CategoriesCard";
 import { CategoryData } from "../../data/Category";
 import BottomSheetComponent from "../../components/BottomSheet";
 import axios from "axios";
-import { fetchAllTop } from "../../services/api";
+import { fetchAllFood, fetchAllTop } from "../../services/api";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
   const [selectedProduct, setSelectedProduct] = useState(null); // Lưu sản phẩm được chọn
   const bottomSheetRef = useRef(null);
   const [data, setData] = useState({});
+  const [all, setAllFood] = useState({});
   const [isLoading, setLoading] = useState(true);
   const scrollY = useRef(new Animated.Value(0)).current;
   // Các điểm snap
@@ -35,9 +36,11 @@ export default function HomeScreen() {
     useCallback(() => {
       const resetData = async () => {
         setLoading(true);
+        const res_all = await fetchAllFood();
         const res = await fetchAllTop();
-        if (res) {
+        if (res && res_all ) {
           setData(res);
+          setAllFood(res_all);
           setLoading(false);
         }
       };
@@ -65,14 +68,17 @@ export default function HomeScreen() {
   // }, [])
   
   const handleProductPress = (product) => {
-    bottomSheetRef.current?.expand();
+    if (selectedProduct === product) {
+      bottomSheetRef.current?.expand();
+    }
     setSelectedProduct(product); // Cập nhật sản phẩm được chọn
   };
   
   // Mở BottomSheet khi selectedProduct thay đổi
   useEffect(() => {
     if (selectedProduct && bottomSheetRef.current) {
-      console.log("Selected: ", selectedProduct.name);
+      
+    bottomSheetRef.current?.expand();
     }
   }, [selectedProduct]);
   
@@ -119,7 +125,7 @@ export default function HomeScreen() {
           <Icon name="search" size={20} color="black" style={styles.icon} />
           <TextInput
             style={styles.input}
-            onPress={() => {navigation.navigate("Search")}}
+            onPress={() => {navigation.navigate("Search",{all})}}
             placeholder="Bạn đang đói à?"
             placeholderTextColor="#FFA8A8"
             readOnly

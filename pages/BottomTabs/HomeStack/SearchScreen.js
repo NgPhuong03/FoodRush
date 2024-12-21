@@ -3,28 +3,27 @@ import { FlatList, StyleSheet, Text, TextInput, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import RenderSearchItem from "../../../components/RenderSearchItem";
 import { useEffect, useState } from "react";
-import { fetchAllFood } from "../../../services/api";
 import { useNavigation } from "@react-navigation/native";
 
 function removeVietnameseTones(str) {
   str = str.toLowerCase();
-//   str = str.replace(
-//     /[\u00E0\u00E1\u1EA3\u00E3\u1EA1\u0103\u1EAF\u1EB1\u1EB3\u1EB5\u1EB7\u00E2\u1EA5\u1EA7\u1EA9\u1EAB\u1EAD]/g,
-//     "a"
-//   );
-//   str = str.replace(
-//     /[\u00E8\u00E9\u1EBB\u1EBD\u1EB9\u00EA\u1EBF\u1EC1\u1EC3\u1EC5\u1EC7]/g,
-//     "e"
-//   );
-//   str = str.replace(/[\u00EC\u00ED\u1EC9\u0129\u1ECB]/g, "i");
-//   str = str.replace(
-//     /[\u00F2\u00F3\u1ECF\u00F5\u1ECD\u00F4\u1ED1\u1ED3\u1ED5\u1ED7\u1ED9\u01A1\u1EDD\u1EDF\u1EE1\u1EE3\u1EE5]/g,
-//     "o"
-//   );
-//   str = str.replace(
-//     /[\u00F9\u00FA\u1EE7\u0169\u1EEB\u1EED\u1EEF\u1EF1\u1EF3]/g,
-//     "u"
-//   );
+  str = str.replace(
+    /[\u00E0\u00E1\u1EA3\u00E3\u1EA1\u0103\u1EAF\u1EB1\u1EB3\u1EB5\u1EB7\u00E2\u1EA5\u1EA7\u1EA9\u1EAB\u1EAD]/g,
+    "a"
+  );
+  str = str.replace(
+    /[\u00E8\u00E9\u1EBB\u1EBD\u1EB9\u00EA\u1EBF\u1EC1\u1EC3\u1EC5\u1EC7]/g,
+    "e"
+  );
+  str = str.replace(/[\u00EC\u00ED\u1EC9\u0129\u1ECB]/g, "i");
+  str = str.replace(
+    /[\u00F2\u00F3\u1ECF\u00F5\u1ECD\u00F4\u1ED1\u1ED3\u1ED5\u1ED7\u1ED9\u01A1\u1EDD\u1EDF\u1EE1\u1EE3\u1EE5]/g,
+    "o"
+  );
+  str = str.replace(
+    /[\u00F9\u00FA\u1EE7\u0169\u1EEB\u1EED\u1EEF\u1EF1\u1EF3]/g,
+    "u"
+  );
 //   str = str.replace(/[\u00FD\u1EF7\u1EF9\u1EF5]/g, "y");
 //   str = str.replace(/[\u0111]/g, "d");
 //   str = str.replace(/[\u0300\u0301\u0303\u0309\u0323]/g, ""); // Các dấu thanh
@@ -48,17 +47,17 @@ function containsAllCharacters(strA, strB) {
   return true;
 }
 
-export default function SearchScreen() {
-  const [allFood, setAllFood] = useState(null);
+export default function SearchScreen({route}) {
+  const {all} = route.params;
   const [searchData, setSearchData] = useState(null);
   const [searchText, setSearchText] = useState("");
   const navigation = useNavigation();
   const SearchFood = (text) => {
     setSearchText(text);
     if (text === "") {
-      setSearchData(allFood);
+      setSearchData(all);
     } else {
-      const dataFilter = allFood.filter((e) =>
+      const dataFilter = all.filter((e) =>
         containsAllCharacters(
           removeVietnameseTones(e.name),
           removeVietnameseTones(text)
@@ -69,12 +68,7 @@ export default function SearchScreen() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-        const res = await fetchAllFood();
-        setAllFood(res);
-        setSearchData(res);
-    }
-    fetchData();
+    setSearchData(all)
     
   },[]);
 
