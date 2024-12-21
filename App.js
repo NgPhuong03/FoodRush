@@ -9,9 +9,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import BottomSheet, { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { initializeAPIUrl } from "./services/api";
+import ShipperStack from "./components/ShipperStack";
 
 function ScreenStack() {
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated , isShipper} = useContext(AuthContext);
   const { width, height } = Dimensions.get("window");
 
   return (
@@ -29,7 +30,7 @@ function ScreenStack() {
               />
             </SafeAreaView>
           )}
-          {isAuthenticated ? <BottomTabNavigatior /> : <AuthenticationStack />}
+          {isAuthenticated ? isShipper ? <ShipperStack/> : <BottomTabNavigatior /> : <AuthenticationStack />}
         </BottomSheetModalProvider>
       </GestureHandlerRootView>
     </NavigationContainer>

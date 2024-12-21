@@ -148,7 +148,7 @@ export default function AddMap() {
         latitude: userLocation.latitude,
         longitude: userLocation.longitude,
         type: 'default',
-        title: 'Tieu de',
+        title: 'Địa điểm mới',
         distance: khoangcach
       };
 

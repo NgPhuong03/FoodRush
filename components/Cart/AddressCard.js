@@ -1,22 +1,19 @@
-import { useEffect, useState } from "react";
-import { View, StyleSheet, Text } from "react-native"
-import axios from "axios";
-import { getAddress } from "../../services/api";
+import { useContext, useEffect, useState } from "react";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native"
 import { getUser } from "../../services/api";
 import Icon from "react-native-vector-icons/FontAwesome6";
+import { AuthContext } from "../../contexts/AuthContext";
 
 
 
-export default function AddressCard({isPay, userInOrderHistory, setAddressId }){
-    const [user, setUser] = useState()
-    const [address, setAddress] = useState()
+export default function AddressCard({isPay, userInOrderHistory, setAddressId , navigation}){
+    const {lastAddressOrder} = useContext(AuthContext);
+    const [user, setUser] = useState();
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const Loaddata = async () => {
-            const resAddress = await getAddress();
             const resUser = await getUser();
-            setAddress(resAddress);
             setUser(resUser.result);
             setIsLoading(false);
         };
@@ -35,7 +32,7 @@ export default function AddressCard({isPay, userInOrderHistory, setAddressId }){
 
     if(isPay == true){
         return (
-            <View style={styles.container}>
+            <TouchableOpacity style={styles.container} onPress={() => navigation.navigate("SelectedAddress")}>
                 <View style={{
                     width: "20%", 
                     justifyContent: "flex-start",
@@ -51,7 +48,7 @@ export default function AddressCard({isPay, userInOrderHistory, setAddressId }){
                         {user.name} | {user.phone_number}
                     </Text>
                     <Text style={styles.address} numberOfLines={2}>
-                        {address[0].address}
+                        {lastAddressOrder?.address}
                     </Text>
                 </View>
     
@@ -63,7 +60,7 @@ export default function AddressCard({isPay, userInOrderHistory, setAddressId }){
                     <Icon name="chevron-right" size={24}/>
                 </View>
     
-            </View>
+            </TouchableOpacity>
         )
     }
 

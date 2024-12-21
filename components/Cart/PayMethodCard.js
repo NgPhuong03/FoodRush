@@ -7,7 +7,7 @@ import * as Clipboard from "expo-clipboard";
 
 
 export default function PayMethodCard({setPaymentMethod }){
-    const [selectedMethod, setSelectedMethod] = useState(null);
+    const [selectedMethod, setSelectedMethod] = useState('cash');
 
     const copyToClipboard = (text) => {
         Clipboard.setStringAsync(text);
@@ -104,8 +104,8 @@ export default function PayMethodCard({setPaymentMethod }){
           <TouchableOpacity
             style={[styles.option, selectedMethod === 'cash' && styles.selectedOption]}
             onPress={() => {
-              setSelectedMethod('cash')
-              setPaymentMethod(false)
+              setSelectedMethod('cash');
+              setPaymentMethod(false);
             }}
           >
             {selectedMethod === 'cash' 
@@ -121,8 +121,8 @@ export default function PayMethodCard({setPaymentMethod }){
           <TouchableOpacity
             style={[styles.option, selectedMethod === 'transfer' && styles.selectedOption]}
             onPress={() => {
-              setSelectedMethod('transfer')
-              setPaymentMethod(true)
+              setSelectedMethod('transfer');
+              setPaymentMethod(true);
             }}
           >
             {selectedMethod === 'transfer' 
