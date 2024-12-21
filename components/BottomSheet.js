@@ -36,8 +36,10 @@ const BottomSheetComponent = ({
       { id: 2, name: "Sting", price: 12000, selected: false, quantity: 1 },
     ]);
     setQuantity(1);
-
-    setFavor(favorites.some((obj) => selectedProduct?.id === obj.id));
+    if( favorites ){
+      setFavor(favorites.some((obj) => selectedProduct?.id === obj.id));
+    }
+    
   }, [selectedProduct]); // Reset khi product thay đổi
 
   const incrementMainQuantity = () => setQuantity((prev) => prev + 1);

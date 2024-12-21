@@ -15,6 +15,7 @@ const AuthContext = createContext();
 const AuthContextProvider = ({ children }) => {
   const [isAuthenticated, setAuthenticated] = useState(false);
   const [favorites, setFavourites] = useState({});
+  const [isShipper, setRole] = useState(false);
   const [user, setUser] = useState({});
 
   const LogIn = async (form) => {
@@ -22,12 +23,12 @@ const AuthContextProvider = ({ children }) => {
     const res = await login(form);
     console.log("Đã gọi Login");
 
-    if (res.code == 1000) {
+    if (res.result.role == 'user') {
       const favor = await getFavorites();
       const sortedData = favor.result.sort((a, b) =>
         a.name.localeCompare(b.name)
       );
-      setFavourites(sortedData.length > 0 ? sortedData : null);
+      setFavourites(sortedData.length > 0 ? sortedData : []);
       setUser({
         email: form.email,
         password: form.password,
@@ -35,6 +36,9 @@ const AuthContextProvider = ({ children }) => {
         id: res.id,
       });
       setAuthenticated(true);
+    } else {
+        setRole(true)
+        setAuthenticated(true);
     }
     return res;
   };
@@ -73,7 +77,7 @@ const AuthContextProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, LogIn, LogOut, user, favorites, unFavourite, addToFavourite }}
+      value={{ isAuthenticated, LogIn, LogOut, user, favorites, unFavourite, addToFavourite , isShipper}}
     >
       {children}
     </AuthContext.Provider>
