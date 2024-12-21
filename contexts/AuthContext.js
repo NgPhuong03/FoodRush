@@ -5,6 +5,7 @@ import {
   addFavorite,
   deleteFavorite,
   getFavorites,
+  getLastAddress,
   login,
 } from "../services/api";
 
@@ -15,6 +16,7 @@ const AuthContext = createContext();
 const AuthContextProvider = ({ children }) => {
   const [isAuthenticated, setAuthenticated] = useState(false);
   const [favorites, setFavourites] = useState({});
+  const [lastAddressOrder, setLastAddressOrder] = useState({});
   const [isShipper, setRole] = useState(false);
   const [user, setUser] = useState({});
 
@@ -25,9 +27,13 @@ const AuthContextProvider = ({ children }) => {
 
     if (res.result.role == 'user') {
       const favor = await getFavorites();
+      const address = await getLastAddress();
       const sortedData = favor.result.sort((a, b) =>
         a.name.localeCompare(b.name)
       );
+
+      address ? setLastAddressOrder(address.data.result) : {};
+      
       setFavourites(sortedData.length > 0 ? sortedData : []);
       setUser({
         email: form.email,
@@ -75,9 +81,13 @@ const AuthContextProvider = ({ children }) => {
     }
   };
 
+  const handleNewMainAddress = (item) =>{
+    setLastAddressOrder(item);
+  }
+
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, LogIn, LogOut, user, favorites, unFavourite, addToFavourite , isShipper}}
+      value={{ isAuthenticated, LogIn, LogOut, user, favorites, unFavourite, addToFavourite , isShipper, lastAddressOrder, handleNewMainAddress}}
     >
       {children}
     </AuthContext.Provider>

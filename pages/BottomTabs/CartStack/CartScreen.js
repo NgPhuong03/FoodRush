@@ -33,8 +33,8 @@ export default function CartScreen() {
   const loadData = async () => {
     setRefreshing(true);
     const response = await getCartByUserId();
-    if (response) {
-      setCart(response.length > 0 ? response : null);
+    if (response && response.length > 0) {
+      setCart(response);
     } else {
       setCart(null);
     }
@@ -80,7 +80,15 @@ export default function CartScreen() {
       await deleteCart(id);
   
       // Cập nhật lại danh sách giỏ hàng trong state
-      setCart((prevCart) => prevCart.filter((item) => item.cart_id !== id));
+        setCart((prevCart) => {
+            const updatedCart = prevCart.filter((item) => item.cart_id !== id);
+            if (updatedCart.length === 0) {
+                // Nếu giỏ hàng trống, gọi loadData để reload
+                loadData();
+            }
+            return updatedCart;
+        });
+
       console.log(`Đã xóa sản phẩm có ID: ${id}`);
     } catch (error) {
       console.error(`Lỗi khi xóa sản phẩm có ID: ${id}`, error);

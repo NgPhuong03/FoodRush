@@ -7,7 +7,7 @@ import BottomSheetComponent from "../../../components/BottomSheet";
 
 
 export default function CategoryScreen({ route }) {
-  const { categoryId, title } = route.params; // Nhận ID danh mục từ điều hướng
+  const { categoryId, title, item } = route.params; // Nhận ID danh mục từ điều hướng
   const [foodCate, setFoodCate] = useState([])
   const [selectedProduct, setSelectedProduct] = useState(null); // Lưu sản phẩm được chọn
   const [isLoading, setIsLoading] = useState(true)
@@ -33,10 +33,14 @@ export default function CategoryScreen({ route }) {
           break;
       }
 
-      const res = await fetchByCategory(category);
-      if (res){
-        setFoodCate(res);
-      }
+      if(categoryId == 1 || categoryId == 2 || categoryId == 3 || categoryId == 4){
+        const res = await fetchByCategory(category);
+        if (res){
+          setFoodCate(res);
+        }
+      } else {setFoodCate(item)}
+
+
       setIsLoading(false)
 
     }

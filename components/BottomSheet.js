@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   StyleSheet,
   Text,
@@ -7,6 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
+  Alert
 } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -29,18 +31,25 @@ const BottomSheetComponent = ({
   ]);
   const [quantity, setQuantity] = useState(1);
 
-  useEffect(() => {
-    setIsExpanded(false);
-    setInclude([
-      { id: 1, name: "Pepsi", price: 10000, selected: false, quantity: 1 },
-      { id: 2, name: "Sting", price: 12000, selected: false, quantity: 1 },
-    ]);
-    setQuantity(1);
-    if( favorites ){
-      setFavor(favorites.some((obj) => selectedProduct?.id === obj.id));
-    }
-    
-  }, [selectedProduct]); // Reset khi product thay đổi
+  useFocusEffect(
+    useCallback(() => {
+      setIsExpanded(false);
+      setInclude([
+        { id: 1, name: "Pepsi", price: 10000, selected: false, quantity: 1 },
+        { id: 2, name: "Sting", price: 12000, selected: false, quantity: 1 },
+      ]);
+      setQuantity(1);
+  
+      if (favorites) {
+        setFavor(favorites.some((obj) => selectedProduct?.id === obj.id));
+      }
+  
+      // Cleanup function nếu cần thiết
+      return () => {
+        setIsExpanded(false); // Reset trạng thái khi rời khỏi màn hình
+      };
+    }, [selectedProduct, favorites]) // Phụ thuộc vào các giá trị này
+  );
 
   const incrementMainQuantity = () => setQuantity((prev) => prev + 1);
 
@@ -112,9 +121,9 @@ const BottomSheetComponent = ({
     const response = await addToCart(cartItem);
 
     if (response.code === 1000) {
-      alert("Thêm vào giỏ hàng thành công!");
+      Alert.alert("Thông báo", "Thêm vào giỏ hàng thành công!");
     } else {
-      alert("Thêm vào giỏ hàng thất bại: " + response.message);
+      alert("Thông báo","Thêm vào giỏ hàng thất bại: " + response.message);
     }
 
     bottomSheetRef.current?.close();

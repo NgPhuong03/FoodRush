@@ -78,7 +78,7 @@ export default function FavoritesScreen() {
     );
   }
 
-  if (favorites.length == 0) {
+  if (favorites.length === 0) {
     return (
       <View style={styles.container}>
         <View style={styles.headerContainer}>

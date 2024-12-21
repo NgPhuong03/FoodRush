@@ -75,6 +75,17 @@ export const addAddress = async (diachi) => {
   return "ok";
 };
 
+// Lấy địa chị của đơn đặt hàng cũ
+export const getLastAddress = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/address/${user_id}/last_order`);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+  
+};
+
 // Xoá địa chỉ
 export const deleteAddress = async (id) => {
   try {
@@ -154,7 +165,8 @@ export const getFavorites = async () => {
 };
 
 
-//order
+    //order
+// Get order
 export const getOrderByUserId = async () => {
   try {
     const response = await axios.get(`${API_URL}/users/${user_id}/orders`);
@@ -165,6 +177,7 @@ export const getOrderByUserId = async () => {
   }
 
 };
+
 
 
 // Phần lấy location shipper
@@ -204,9 +217,9 @@ export const getCartByUserId = async () => {
 }
 
 //xóa cart
-export const deleteCart = async (id) => {
+export const deleteCart = async () => {
   try {
-    await axios.delete(`${API_URL}/cart/delete/${id}`);
+    await axios.delete(`${API_URL}/cart/delete/${user_id}`);
   } catch (error) {
     console.log(error);
   }

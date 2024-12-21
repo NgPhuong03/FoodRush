@@ -109,15 +109,13 @@ export default function HistoryScreen() {
               <TouchableOpacity onPress={() => navigation.navigate('OrderDetails', 
                 {
                   order_id: item.order_id,
-                  order_id: item.order_id,
-                  created_at: item.created_at,
-                  paid_at: item.paid_at,
-                  paymethod: item.paymethod,
-                  dungcu: item.dungcu
                 })}>
                 <OrderCart 
                   item={item}
-                  onFeedBack={null}
+                  onFeedBack={() => navigation.navigate('Review', 
+                    {
+                      order_id: item.order_id
+                    })}
                 />
               </TouchableOpacity>
             )}

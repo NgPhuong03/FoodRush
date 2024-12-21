@@ -30,7 +30,8 @@ export default function BottomTabNavigatior() {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle:{
-          height: 80
+          height: 80,
+          
         },
         tabBarActiveTintColor:"#FA4A0C",
         tabBarIconStyle: {
