@@ -35,6 +35,15 @@ export default function FavoritesScreen() {
           await deleteFavorite(id);   
           // Cập nhật lại danh sách giỏ hàng trong state
           setFavourite(prevFavourite => prevFavourite.filter(item => item.id != id))
+
+          setFavourite((prevFavourite) => {
+            const updatedFav = prevFavourite.filter((item) => item.cart_id !== id);
+            if (updatedFav.length === 0) {
+                // Nếu giỏ hàng trống, gọi loadData để reload
+                loadData();
+            }
+            return updatedFav;
+        });
           console.log(`Đã unlike sản phẩm có ID: ${id}`);
         } catch (error) {
           console.error(`Lỗi khi unlike sản phẩm có ID: ${id}`, error);
@@ -46,9 +55,9 @@ export default function FavoritesScreen() {
       useCallback(() => {
         const resetData = async () => {
           const response = await getFavorites();
-          if (response) {
+          if (response && response.result.length > 0) {
             const sortedData = response.result.sort((a, b) => a.name.localeCompare(b.name));
-            setFavourite(sortedData.length > 0 ? sortedData : null);
+            setFavourite(sortedData);
           } else {
             setFavourite(null);
           }
@@ -73,13 +82,13 @@ export default function FavoritesScreen() {
     setRefreshing(false)
   }
   
-  // useEffect(() => {
-  //   loadData()
-  //   // const interval = setInterval(() => {
-  //   //   loadData();
-  //   // }, 1000); 
-  //   // return () => clearInterval(interval);
-  // },[])
+  useEffect(() => {
+    loadData()
+    // const interval = setInterval(() => {
+    //   loadData();
+    // }, 1000); 
+    // return () => clearInterval(interval);
+  },[])
 
   if(isLoading){
     return(

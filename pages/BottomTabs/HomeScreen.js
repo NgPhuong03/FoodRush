@@ -92,7 +92,7 @@ export default function HomeScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.viewHeader}>
-        <Text style={styles.address}>Khu phố 6, phường Linh Trung</Text>
+        <Text style={styles.title}>FoodRush </Text>
         <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
           <Icon name="bell" size={27} color="white" />
         </TouchableOpacity>
@@ -115,16 +115,13 @@ export default function HomeScreen() {
           },
         ]}
       >
-        <View style={styles.inputContainer} >
-          <Icon name="search" size={20} color="black" style={styles.icon} />
-          <TextInput
-            style={styles.input}
-            onPress={() => {navigation.navigate("Search")}}
-            placeholder="Bạn đang đói à?"
-            placeholderTextColor="#FFA8A8"
-            readOnly
-          />
-        </View>
+          <TouchableOpacity style={styles.inputContainer}  
+                onPress={() => {navigation.navigate("Search")}}>
+            <Icon name="search" size={20} color="black" style={styles.icon} />
+            <Text
+              style={styles.input}
+            >Bạn đang đói à?</Text>
+          </TouchableOpacity>
       </Animated.View>
 
       <Animated.ScrollView
@@ -270,11 +267,13 @@ const styles = StyleSheet.create({
     paddingTop: 25,
     borderWidth: 1
   },
-  address: {
+  title: {
     color: 'white',
-    fontSize: 16,
-    fontWeight: '400',
-    textAlign: "left"
+    fontSize: 25,
+    fontWeight: '600',
+    textAlign: "left",
+    borderWidth: 1,
+    width: "70%"
   },
   containerChild: {
     width: "100%",
@@ -302,7 +301,6 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 5,
     shadowOpacity: 0.3,
-
   },
   input: {
     width: "90%",
@@ -310,7 +308,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
     fontSize: 20,
-    color: "#FA4A0C"
+    color: "#FFA8A8"
   },
   icon: {
     marginLeft: 10,
