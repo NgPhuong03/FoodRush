@@ -9,13 +9,20 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import BottomSheet, { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { initializeAPIUrl } from "./services/api";
-import ShipperStack from "./components/ShipperStack";
+import ShipperTopTab from "./components/Shipper/ShipperTopTap";
 
 function ScreenStack() {
   const { isAuthenticated , isShipper} = useContext(AuthContext);
   const { width, height } = Dimensions.get("window");
 
+  useEffect(() => {
+    console.log("isShiper: " + isShipper);
+
+  },[isShipper])
+
   return (
+    
+
     <NavigationContainer>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <BottomSheetModalProvider>
@@ -30,7 +37,7 @@ function ScreenStack() {
               />
             </SafeAreaView>
           )}
-          {isAuthenticated ? isShipper ? <ShipperStack/> : <BottomTabNavigatior /> : <AuthenticationStack />}
+          {isAuthenticated ? (isShipper ? <ShipperTopTab/> : <BottomTabNavigatior />) : <AuthenticationStack />}
         </BottomSheetModalProvider>
       </GestureHandlerRootView>
     </NavigationContainer>
