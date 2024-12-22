@@ -14,8 +14,8 @@ import { AuthContext } from '../contexts/AuthContext';
 
 export default function LoginScreen() {
   const {LogIn} = useContext(AuthContext);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('Ml@gmail.com');
+  const [password, setPassword] = useState('123123');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [showPassword, setShowPassword] = useState(false)

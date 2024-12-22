@@ -89,7 +89,7 @@ export default function FollowingOrder({route}) {
           style={styles.img}
         /> */}
         <View style={styles.img}>
-          <FollowingShipper/>
+          <FollowingShipper order_id={order_id}/>
         </View>
         <Text style={styles.txtUnderMap}>Đơn hàng của bạn sẽ được giao trong vòng 10-15 phút</Text>
       </View>

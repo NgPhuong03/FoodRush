@@ -105,7 +105,7 @@ export default function OrderScreen() {
               <TouchableOpacity>
                 <OrderCart 
                   item={item}
-                  onFollow={() => navigation.navigate('FollowingOrder', {order_id: item.order_id})}
+                  onFollow={() => navigation.navigate('FollowingOrder', item.order_id)}
                 />
               </TouchableOpacity>
             )}
