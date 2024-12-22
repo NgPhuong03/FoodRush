@@ -84,6 +84,7 @@ export default function SearchScreen({route}) {
           onChangeText={(e) => SearchFood(e)}
         />
       </View>
+
       <FlatList
         data={searchData}
         keyExtractor={(item) => item.id}
@@ -97,6 +98,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    borderWidth: 1
   },
   inputContainer: {
     flexDirection: "row",
@@ -114,7 +116,8 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 5,
     shadowOpacity: 0.3,
-    marginTop: 10
+    marginTop: 10,
+    borderWidth: 1
   },
   input: {
     width: "90%",

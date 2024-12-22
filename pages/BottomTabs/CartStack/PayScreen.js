@@ -38,7 +38,7 @@ export default function PayScreen({ route }) {
       address_id: 18,
       note: note,
       paymethod: paymentMethod,
-      cost: TongTien + 50000, // Phí vận chuyển đã bao gồm
+      cost: TongTien + calculateShipFee(), // Phí vận chuyển đã bao gồm
       list: cart.map((item) => ({
         food_id: item.food.id,
         food_quantity: item.food_quantity,

@@ -41,6 +41,7 @@ const AuthContextProvider = ({ children }) => {
         role: res.role,
         id: res.id,
       });
+      setRole(false)
       setAuthenticated(true);
     } else {
         setRole(true)

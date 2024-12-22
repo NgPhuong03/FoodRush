@@ -18,7 +18,7 @@ export default function ProductDetailsScreen({ route, navigation }) {
     if(favorites){
       setFavor(favorites.some((obj) => item?.id === obj.id));
     }
-  },[])
+  },[favorites])
 
   const handleOpenBottomSheet = () => {
       bottomSheetRef.current?.expand();

@@ -32,28 +32,25 @@ export default function OrderDetailsScreen({route}) {
     return `${day}/${month}/${year} ${hours}:${minutes}`;
   }
 
-
-  const calculateTotalAmount = (cart) => {
-    return cart.reduce((total, item) => {
-
-      // Tổng tiền cho sản phẩm chính
-      const mainProductTotal = item.quantity * item.cost * (1 - item.discount / 100);
-      
-      // Tổng tiền cho Pepsi (nếu có)
-      const pepsiTotal = item.addons.pepsi.quantity > 0 
-        ? item.addons.pepsi.quantity * item.addons.pepsi.cost_pepsi 
+  const calculateTotalAmount = (orderList) => {
+    let totalAmount = 0;
+  
+    orderList.forEach((item) => {
+      // Tính tiền món chính
+      const foodCost = item.food.cost * item.food_quantity;
+  
+      // Tính tiền addon (nếu có)
+      const addonCost = item.addon_list
+        ? item.addon_list.reduce((sum, addon) => sum + addon.price * addon.quantity, 0)
         : 0;
   
-      // Tổng tiền cho Sting (nếu có)
-      const stingTotal = item.addons.sting.quantity > 0 
-        ? item.addons.sting.quantity * item.addons.sting.cost_sting 
-        : 0;
+      // Cộng tổng tiền món chính và addon vào tổng
+      totalAmount += foodCost + addonCost;
+    });
   
-      // Cộng tất cả vào tổng tiền
-      return total + mainProductTotal + pepsiTotal + stingTotal;
+    return totalAmount;
+  }
 
-    }, 0); // Bắt đầu từ 0
-  };
 
       if(isLoading){
         return(
@@ -145,7 +142,7 @@ export default function OrderDetailsScreen({route}) {
             <Text style={{width: "50%", fontSize: 16, textAlign: "left"}}>Tổng cộng</Text>
             <Text style={{width: "50%", fontSize: 16, textAlign: "right"}}>
               {/* {calculateTotalAmount(order).toLocaleString('vi-VN')}đ */}
-              {orderDetail.cost.toLocaleString('vi-VN')}đ
+              {calculateTotalAmount(orderDetail.list).toLocaleString('vi-VN')}đ
             </Text>
           </View>
 
@@ -153,7 +150,7 @@ export default function OrderDetailsScreen({route}) {
           <View style={{flexDirection: "row", paddingBottom: 10}}>
             <Text style={{width: "50%", fontSize: 16, textAlign: "left"}}>Phí vận chuyển</Text>
             <Text style={{width: "50%", fontSize: 16, textAlign: "right"}}>
-              {(50000).toLocaleString('vi-VN')}đ
+              {(orderDetail.cost - calculateTotalAmount(orderDetail.list) ).toLocaleString('vi-VN')}đ
             </Text>
           </View>
         

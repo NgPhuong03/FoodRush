@@ -1,10 +1,10 @@
 import axios from "axios";
 
 
-const API_URL = "http://192.168.1.4:8080/api";
+const API_URL = "http://172.16.0.107:8080/api";
 
 
-let user_id;
+let user_id = 6;
 
 export const getUserId = () => {
   return user_id;
@@ -170,6 +170,17 @@ export const getFavorites = async () => {
 export const getOrderByUserId = async () => {
   try {
     const response = await axios.get(`${API_URL}/users/${user_id}/orders`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return "Lỗi khi lấy danh sách đơn hàng";
+  }
+
+};
+
+export const getOrderByUserIdTestShipper = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/users/6/orders`);
     return response.data;
   } catch (error) {
     console.log(error);
