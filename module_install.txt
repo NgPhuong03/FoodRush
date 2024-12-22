@@ -19,6 +19,11 @@ npm install axios
 npm install lodash.debounce
 npm install react-native-dropdown-picker
 
+slider
+npm install react-native-app-intro-slider
+npm install @react-native-async-storage/async-storage
+
+
 git branch [tên branch]
 git switch [tên branch]
 
