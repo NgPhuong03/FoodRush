@@ -1,21 +1,22 @@
 import { useContext } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, FlatList } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, FlatList, Alert } from "react-native";
 import { AuthContext } from "../../contexts/AuthContext";
 import OrderCartInShipper from "../../components/Shipper/OrderCardInShipper";
-import { getOrderByUserIdTestShipper } from "../../services/api";
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { changeStatusDangGiao, getOrderByShipper } from "../../services/api";
 
 export default function ListOrderScreen({ orderStatus }) {
   const navigation = useNavigation();
   const [order, setOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);  
+  const [onGoing, setOnGoing] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       const resetData = async () => {
-        const response = await getOrderByUserIdTestShipper();
+        const response = await getOrderByShipper();
         if (response) {
           // Lọc đơn hàng theo trạng thái 'dangnau'
           const filteredOrders = response.filter((item) => item.status === orderStatus);
@@ -24,6 +25,12 @@ export default function ListOrderScreen({ orderStatus }) {
           const sortedOrders = filteredOrders.sort((a, b) => new Date(b.create_at) - new Date(a.create_at));
           
           setOrder(sortedOrders.length > 0 ? sortedOrders : null);
+          if (response.find(e => e.status === 'danggiao')){
+            setOnGoing(true);
+          } else {
+            setOnGoing(false);
+          }
+          
         } else {
           setOrder(null);
         }
@@ -34,6 +41,16 @@ export default function ListOrderScreen({ orderStatus }) {
 
     }, [])
   );
+
+  const hanldeStatusPress = async (id) => {
+    if (onGoing){
+      Alert.alert('LOI');
+    } else {
+      await changeStatusDangGiao(id);
+      setOnGoing(true);
+      navigation.navigate("Đang giao");
+    }
+  }
 
   if(isLoading) return null;
 
@@ -46,6 +63,7 @@ export default function ListOrderScreen({ orderStatus }) {
               renderItem={({item}) => (
                   <OrderCartInShipper 
                     item={item}
+                    onFollow={hanldeStatusPress}
                   />
               )}
               contentContainerStyle={{ paddingHorizontal: 10 }}

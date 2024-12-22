@@ -71,9 +71,6 @@ export default FollowingShipper = ({ order_id }) => {
          const coordinates = polyline
            .decode(encoded)
            .map(([latitude, longitude]) => ({ latitude, longitude }));
-
-           console.log('decode ',coordinates);
-           
          setDuongdi(coordinates);
        }
      } catch (error) {
@@ -84,11 +81,11 @@ export default FollowingShipper = ({ order_id }) => {
   useFocusEffect(
     React.useCallback(() => {
       setFocus(true);
-      GetUserLocation(1);
-      GetShipperLocation(1);
+      GetUserLocation(order_id);
+      GetShipperLocation(order_id);
       const interval = setInterval(() => {
-        GetShipperLocation(1);
-      }, 10000);
+        GetShipperLocation(order_id);
+      }, 5000);
 
       return () => {
         clearInterval(interval);
