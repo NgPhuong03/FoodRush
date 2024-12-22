@@ -1,7 +1,7 @@
 import { Dimensions, StyleSheet, View, Text, Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { AuthContext, AuthContextProvider } from "./contexts/AuthContext";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import AuthenticationStack from "./components/AuthenticationStack";
 import { StatusBar } from "expo-status-bar";
 import BottomTabNavigatior from "./components/BottomTabNavigator";
@@ -10,19 +10,38 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import BottomSheet, { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { initializeAPIUrl } from "./services/api";
 import ShipperTopTab from "./components/Shipper/ShipperTopTap";
+import IntroSlider from "./components/IntroSlider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function ScreenStack() {
   const { isAuthenticated , isShipper} = useContext(AuthContext);
   const { width, height } = Dimensions.get("window");
+  const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
-    console.log("isShiper: " + isShipper);
+    const checkIntroViewed = async () => {
+      const viewed = await AsyncStorage.getItem("introViewed");  //Bỏ cmt dòng này để chỉ hiện khi lần đầu vào app
+      if (viewed) {
+        setShowIntro(false);
+      }
 
-  },[isShipper])
+      // setShowIntro(true)
+    };
+    checkIntroViewed();
+  }, []);
+
+  const handleIntroDone = async () => {
+    
+    await AsyncStorage.setItem("introViewed", "true"); //Bỏ cmt dòng này để chỉ hiện khi lần đầu vào app
+    setShowIntro(false);
+  };
+
+  if (showIntro) {
+    return <IntroSlider onDone={handleIntroDone} />;
+  }
 
   return (
-    
-
+  
     <NavigationContainer>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <BottomSheetModalProvider>
