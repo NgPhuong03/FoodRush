@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const API_URL = "http://172.16.0.107:8080/api";
+const API_URL = "http://192.168.1.6:8080/api";
 
 
 let user_id = 6;
@@ -178,10 +178,10 @@ export const getOrderByUserId = async () => {
 
 };
 
-export const getOrderByUserIdTestShipper = async () => {
+export const getOrderByShipper = async () => {
   try {
-    const response = await axios.get(`${API_URL}/users/6/orders`);
-    return response.data;
+    const response = await axios.get(`${API_URL}/orders/shipper/${user_id}`);
+    return response.data.result;
   } catch (error) {
     console.log(error);
     return "Lỗi khi lấy danh sách đơn hàng";
@@ -294,4 +294,38 @@ export const createOrder = async (item) => {
     };
   }
 };
+
+    // SHIPPER
+export const updateShipperLocation = async (location) => {
+  try {
+    await axios.patch(`${API_URL}/shipper/${user_id}`, location);
+    console.log("Cập nhật thông tin  thành công:");
+  } catch (error) {
+    console.error("Lỗi khi cập nhật thông tin địa chỉ shipper:", error);
+  }
+};
+
+// Chon don de giao
+export const changeStatusDangGiao = async (order_id) => {
+  try {
+    await axios.get(`${API_URL}/orders/${order_id}/shipper/${user_id}`);
+    console.log("Cập nhật thông tin  thành công:");
+  } catch (error) {
+    console.error("Lỗi khi cập nhật trang thai dang giao:", error);
+  }
+};
+
+// Giao hang thanh cong
+
+export const changeStatusDaGiao = async (order_id) => {
+  try {
+    await axios.patch(`${API_URL}/orders/${order_id}?status=dagiao`);
+    console.log("Cập nhật thông tin thành công:");
+  } catch (error) {
+    console.error("Lỗi khi cập nhật trang thai da giao:", error);
+  }
+};
+
+
+
 

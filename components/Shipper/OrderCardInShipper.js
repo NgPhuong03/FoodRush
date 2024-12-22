@@ -5,6 +5,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 export default function OrderCartInShipper({item, onFollow}) {
     const navigation = useNavigation()
+    const order_id = item.order_id;
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         
@@ -49,11 +50,11 @@ export default function OrderCartInShipper({item, onFollow}) {
 
                 <View style={{width: "35%", paddingRight: 5}}>
                     <View style={[styles.statusContainer, {backgroundColor: "rgba(151, 71, 255, 0.2)",}]}>
-                        <Text style={[styles.txtStatus, { color: "#9747FF"}]}>{formatStatus(item.status)}</Text>
+                        <Text style={[styles.txtStatus, { color: "#9747FF"}]}>Đang chờ</Text>
                     </View>
                     
                 <TouchableOpacity 
-                        onPress={onFollow}
+                        onPress={() => onFollow(item.order_id)}
                         style={{height: "50%", justifyContent: "center", marginTop: 10, marginLeft: -20}}
                     >
                         <View 
@@ -105,7 +106,7 @@ export default function OrderCartInShipper({item, onFollow}) {
                     </View>
 
                     <TouchableOpacity 
-                        onPress={() => navigation.navigate("ToMap")}
+                        onPress={() => navigation.navigate("ToMap",order_id)}
                         style={{height: "50%", justifyContent: "center", marginTop: 10}}
                     >
                         <View 
