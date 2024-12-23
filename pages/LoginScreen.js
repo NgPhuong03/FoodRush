@@ -102,11 +102,11 @@ export default function LoginScreen() {
         {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : <Text style={styles.errorText}></Text>}
       </View>
 
-      <View style={styles.forgetContainer}>
+      {/* <View style={styles.forgetContainer}>
         <TouchableOpacity style={styles.btnForget}>
           <Text style={styles.txtForget}>Quên mật khẩu?</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
 
       <View style={styles.loginContainer}>

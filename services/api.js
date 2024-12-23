@@ -326,6 +326,15 @@ export const changeStatusDaGiao = async (order_id) => {
   }
 };
 
+    // RATING
 
+export const getRatingFood = async (food_id) => {
+  try {
+    const res = await axios.get(`${API_URL}/rating/user/${user_id}/food/${food_id}`);
+    return res.data;
+  } catch (error) {
+    console.error("Lỗi khi get rating star :", error);
+  }
+};
 
 

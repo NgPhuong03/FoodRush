@@ -128,7 +128,7 @@ export default MapToCustomerScreen = ({ route }) => {
       UpdateShipperLocation();
       const interval = setInterval(() => {
         UpdateShipperLocation();
-      }, 10000);
+      }, 5000);
 
       return () => {
         clearInterval(interval);
