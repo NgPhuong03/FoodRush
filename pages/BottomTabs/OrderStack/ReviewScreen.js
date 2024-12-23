@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList} from "react-native"
+import { View, Text, StyleSheet, FlatList, Alert} from "react-native"
 import { getOrderDetailById } from '../../../services/api';
 import { useEffect, useState } from "react";
 import { Image } from "expo-image";
@@ -41,6 +41,7 @@ export default function ReviewScreen({route}){
         const rvData = {
             ratings
         }
+        Alert.alert('Cảm ơn bạn vì đã đánh giá');
 
         console.log(rvData.ratings)
 
