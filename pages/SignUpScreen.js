@@ -289,10 +289,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#F2F2F2",
     height: "100%",
     alignItems: "center",
-    paddingTop: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 10
   },
   containerChild: {
-    width: "90%",
+    width: "100%",
     height: "auto",
     marginTop: 10,
   },
@@ -342,6 +343,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 20,
     marginTop: 30,
+    alignSelf: "center"
   },
   btn: {
     width: "100%",
