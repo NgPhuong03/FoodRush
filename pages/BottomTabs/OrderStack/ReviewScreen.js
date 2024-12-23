@@ -37,15 +37,21 @@ export default function ReviewScreen({route}){
         }));
     };
 
-    const handleGui = async () =>{
+    const handleGui = async () => {
+        // Chuyển đổi ratings từ object sang mảng object
+        const formattedRatings = Object.entries(ratings).map(([food_id, star]) => ({
+            food_id: Number(food_id), // Đảm bảo food_id là số
+            star,
+        }));
+    
         const rvData = {
-            ratings
-        }
-
-        console.log(rvData.ratings)
-
-    }
-
+            ratings: formattedRatings,
+        };
+    
+        console.log(rvData.ratings);
+        
+    };
+    
     if(isLoading){
         return(
             <View style={{
@@ -78,7 +84,6 @@ export default function ReviewScreen({route}){
                     initialRating={ratings[item.food.id]} // Số sao mặc định là 5
                 />
             ))}
-             <Text>Ratings: {JSON.stringify(ratings, null, 2)}</Text>
 
              <Button
                       title="Gửi"
