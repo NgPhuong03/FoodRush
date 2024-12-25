@@ -1,11 +1,13 @@
-import { View, Text, StyleSheet, FlatList} from "react-native"
-import { getOrderDetailById } from '../../../services/api';
+import { View, Text, StyleSheet, FlatList, Alert} from "react-native"
+import { addRatingFood, getOrderDetailById } from '../../../services/api';
 import { useEffect, useState } from "react";
 import { Image } from "expo-image";
 import FoodCardInReview from "../../../components/Order/FoodCardInReview";
 import { Button } from "@rneui/themed";
+import { useNavigation } from "@react-navigation/native";
 
 export default function ReviewScreen({route}){
+  const navigation = useNavigation();
     const {order_id} = route.params;
     const [food, setFood] = useState(null);
     const [isLoading, setIsLoading] = useState(true)
@@ -16,7 +18,7 @@ export default function ReviewScreen({route}){
             const response = await getOrderDetailById(order_id);
             console.log("Review: " + response.list)
             if (response){
-                setFood(response.list)
+                setFood(response.list);
 
                 // Khởi tạo ratings với giá trị mặc định là 5 sao
                 const initialRatings = response.list.reduce((acc, item) => {
@@ -47,7 +49,12 @@ export default function ReviewScreen({route}){
         const rvData = {
             ratings: formattedRatings,
         };
-    
+
+        rvData.ratings.forEach( async (element) => {
+          await addRatingFood(element);
+        });
+        Alert.alert("Đánh giá thành công","Cảm ơn bạn vì đã đánh giá món ăn");
+        navigation.goBack();
         console.log(rvData.ratings);
         
     };

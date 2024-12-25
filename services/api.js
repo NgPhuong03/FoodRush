@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const API_URL = "http://192.168.137.1:8080/api";
+const API_URL = "http://192.168.1.4:8080/api";
 
 
 let user_id = 6;
@@ -326,6 +326,30 @@ export const changeStatusDaGiao = async (order_id) => {
   }
 };
 
+    // RATING
+
+export const getRatingFood = async (food_id) => {
+  try {
+    const res = await axios.get(`${API_URL}/rating/user/${user_id}/food/${food_id}`);
+    if(res.data.code === 1111){
+      return 5;
+    } else {
+      return res.data.result.star;
+    }
+    
+  } catch (error) {
+    console.error("Lỗi khi get rating star :", error);
+  }
+};
 
 
+// Add rating
+export const addRatingFood = async (data) => {
+  try {
+    await axios.post(`${API_URL}/rating/${user_id}`,data);
+    console.log("Add rating thành công:");
+  } catch (error) {
+    console.error("Lỗi khi add rating: ", error);
+  }
+};
 
