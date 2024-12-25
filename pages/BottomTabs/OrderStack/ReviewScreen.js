@@ -11,6 +11,8 @@ export default function ReviewScreen({route}){
     const [isLoading, setIsLoading] = useState(true)
     const [ratings, setRatings] = useState({})
 
+    
+
     useEffect(() => {
         const loadData = async () => {
             const response = await getOrderDetailById(order_id);

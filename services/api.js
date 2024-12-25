@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const API_URL = "http://192.168.137.1:8080/api";
+const API_URL = "http://10.0.100.64:8080/api";
 
 
 let user_id = 6;
@@ -16,7 +16,7 @@ export const login = async (form) => {
   const response = await axios.post(`${API_URL}/auth/login`, form);
   if (response.data.code == 1000) {
     user_id = response.data.result.id;
-    console.log("respone" + response.data);
+    console.log("respone api: " + response.data);
   }
   // firstCallMap();
   return response.data;

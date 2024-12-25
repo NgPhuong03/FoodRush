@@ -32,10 +32,10 @@ export default function PayScreen({ route }) {
       Alert.alert("LỖI", "Bạn chưa chọn địa chỉ nhận hàng!");
       return;
     }
-
+    
     const formattedOrder = {
       user_id: getUserId(),
-      address_id: 18,
+      address_id: lastAddressOrder.id,
       note: note,
       paymethod: paymentMethod,
       cost: TongTien + calculateShipFee(), // Phí vận chuyển đã bao gồm
@@ -62,8 +62,8 @@ export default function PayScreen({ route }) {
 
   const calculateShipFee = () => {
     let fee = 0;
-    if (lastAddressOrder.distance > 4000) {
-      fee += lastAddressOrder.distance * 10;
+    if (lastAddressOrder?.distance > 4000) {
+      fee += lastAddressOrder?.distance * 10;
     }
     return fee;
   };
@@ -138,12 +138,12 @@ export default function PayScreen({ route }) {
             <Text style={{ width: "50%", fontSize: 16, textAlign: "left" }}>
               Phí vận chuyển:
             </Text>
-            {lastAddressOrder.distance > 4000 && (
+            {lastAddressOrder?.distance > 4000 && (
               <Text style={{ width: "25%", fontSize: 16, textAlign: "center" }}>
-                {lastAddressOrder.distance / 1000}km
+                {lastAddressOrder?.distance / 1000}km
               </Text>
             )}
-            {lastAddressOrder.distance > 4000 ? (
+            {lastAddressOrder?.distance > 4000 ? (
               <Text style={{ width: "25%", fontSize: 16, textAlign: "right" }}>
                 {calculateShipFee().toLocaleString("vi-VN")}đ
               </Text>

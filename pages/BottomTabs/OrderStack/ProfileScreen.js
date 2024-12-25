@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import { getUser } from '../../../services/api';
 import { useEffect, useState } from 'react';
@@ -47,11 +47,11 @@ export default function ProfileScreen() {
         const response = await updateUser(editableUserInfo);
           setUserInfo(response.result); // Cập nhật lại dữ liệu sau khi lưu thành công
           setIsEditing(false); // Thoát chế độ chỉnh sửa
-          alert("Cập nhật thông tin thành công!");
+          Alert.alert("Thông báo","Cập nhật thông tin thành công!");
       } catch (error) {
         console.error("Lỗi khi cập nhật thông tin:", error);
         setIsEditing(false);
-        alert("Đã xảy ra lỗi. Vui lòng thử lại!");
+        Alert.alert("Thông báo","Đã xảy ra lỗi. Vui lòng thử lại!");
       }
     };
   

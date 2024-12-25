@@ -49,12 +49,14 @@ export default function LoginScreen() {
     }
 
     if (valid) {
+      console.log(valid)
       const formLogin = {email: email, password: password};
       const res = await LogIn(formLogin); // Gọi hàm đăng nhập nếu mọi thứ hợp lệ
-      console.log('ressss', res);
       
       if (res.code == 1003){
         setEmailError(res.message);
+        setPasswordError(res.message);
+        console.log(emailError)
       }
     }
   };
