@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, FlatList, Alert} from "react-native"
-import { addRatingFood, getOrderDetailById } from '../../../services/api';
+import { addRatingFood, getOrderDetailById, getRatingFood } from '../../../services/api';
 import { useEffect, useState } from "react";
 import { Image } from "expo-image";
 import FoodCardInReview from "../../../components/Order/FoodCardInReview";
@@ -13,18 +13,25 @@ export default function ReviewScreen({route}){
     const [isLoading, setIsLoading] = useState(true)
     const [ratings, setRatings] = useState({})
 
+    
+
     useEffect(() => {
         const loadData = async () => {
             const response = await getOrderDetailById(order_id);
-            console.log("Review: " + response.list)
             if (response){
                 setFood(response.list);
 
-                // Khởi tạo ratings với giá trị mặc định là 5 sao
-                const initialRatings = response.list.reduce((acc, item) => {
-                    acc[item.food.id] = 5; // Mặc định 5 sao
-                    return acc;
-                }, {});
+
+                // Lấy số sao đã đánh giá từ API
+                const initialRatings = {};
+                for (const item of response.list) {
+                    const rating = await getRatingFood(item.food.id);
+                    if (rating.code == 1111){
+                      initialRatings[item.food.id] = 5; // Nếu chưa có đánh giá, mặc định là 5 sao
+                    } else {
+                      initialRatings[item.food.id] = rating.result.star; 
+                    }
+                }
                 setRatings(initialRatings);
             }
             setIsLoading(false)

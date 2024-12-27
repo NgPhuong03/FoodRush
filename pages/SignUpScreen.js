@@ -7,6 +7,7 @@ import {
   View,
   TextInput,
   ScrollView,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { signUp } from "../services/api";
@@ -91,11 +92,16 @@ export default function SignUpScreen() {
         phone_number: phoneNumber
       };
       const res = await signUp(signupForm);
-      if (res.code === 1000 ) {
-        console.log("SignUp thành công!");
+      if (res.code === 201 ) {
+        Alert.alert("Thông báo", "Đăng ký thành công");
+        setEmail("")
+        setName("")
+        setPhoneNumber("")
+        setPassword("")
+        setConfirmPassword("")
       } else if (res.code == 1001 ) {
         setEmailError(res.message);
-        console.log("SignUp không thành công!");
+        Alert.alert("Thông báo","Email đã tồn tại, vui lòng kiểm tra lại");
       }
       
     }
@@ -181,6 +187,7 @@ export default function SignUpScreen() {
               style={styles.input}
               placeholder="Nhập số điện thoại"
               autoCapitalize="none"
+              keyboardType="numeric"
               value={phoneNumber}
               onChangeText={(e) => setPhoneNumber(e)}
             />

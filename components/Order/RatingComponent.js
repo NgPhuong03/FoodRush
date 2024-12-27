@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 export default function RatingComponent({ initialRating = 0, onRatingChange }) {
     const [rating, setRating] = useState(initialRating);
+
+    useEffect(() => {
+        setRating(initialRating); // Đồng bộ initialRating khi props thay đổi
+    }, [initialRating]);
 
     const handleRating = (value) => {
         setRating(value);

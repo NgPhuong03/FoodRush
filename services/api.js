@@ -1,10 +1,10 @@
 import axios from "axios";
 
 
-const API_URL = "http://192.168.1.4:8080/api";
+const API_URL = "http://10.0.116.179:8080/api";
 
 
-let user_id = 6;
+let user_id;
 
 export const getUserId = () => {
   return user_id;
@@ -16,7 +16,7 @@ export const login = async (form) => {
   const response = await axios.post(`${API_URL}/auth/login`, form);
   if (response.data.code == 1000) {
     user_id = response.data.result.id;
-    console.log("respone" + response.data);
+    console.log("respone api: " + response.data);
   }
   // firstCallMap();
   return response.data;
@@ -331,10 +331,8 @@ export const changeStatusDaGiao = async (order_id) => {
 export const getRatingFood = async (food_id) => {
   try {
     const res = await axios.get(`${API_URL}/rating/user/${user_id}/food/${food_id}`);
-    if(res.data.code === 1111){
-      return 5;
-    } else {
-      return res.data.result.star;
+    if(res){
+      return res.data;
     }
     
   } catch (error) {

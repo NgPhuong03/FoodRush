@@ -7,6 +7,7 @@ import {
   getFavorites,
   getLastAddress,
   login,
+  signUp
 } from "../services/api";
 
 // Tạo Context
@@ -23,30 +24,33 @@ const AuthContextProvider = ({ children }) => {
   const LogIn = async (form) => {
     console.log("Đang gọi LogIn");
     const res = await login(form);
-    console.log("Đã gọi Login");
+    console.log(res.code)
 
-    if (res.result.role == 'user') {
-      const favor = await getFavorites();
-      const address = await getLastAddress();
-      const sortedData = favor.result.sort((a, b) =>
-        a.name.localeCompare(b.name)
-      );
+    if(res.code == 1000){
+      if (res.result.role == 'user') {
+        const favor = await getFavorites();
+        const address = await getLastAddress();
+        const sortedData = favor.result.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
 
-      address ? setLastAddressOrder(address.data.result) : {};
-      
-      setFavourites(sortedData.length > 0 ? sortedData : []);
-      setUser({
-        email: form.email,
-        password: form.password,
-        role: res.role,
-        id: res.id,
-      });
-      setRole(false)
-      setAuthenticated(true);
-    } else {
-        setRole(true)
+        address ? setLastAddressOrder(address.data.result) : {};
+        
+        setFavourites(sortedData.length > 0 ? sortedData : []);
+        setUser({
+          email: form.email,
+          password: form.password,
+          role: res.role,
+          id: res.id,
+        });
+        setRole(false)
         setAuthenticated(true);
+      } else {
+          setRole(true)
+          setAuthenticated(true);
+      }
     }
+    
     return res;
   };
 
